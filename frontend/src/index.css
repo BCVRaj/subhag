@@ -1,0 +1,147 @@
+/* Leaflet Map Styles - Must be first */
+@import 'leaflet/dist/leaflet.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+  @apply bg-background-dark text-white;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B0F19;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2D3748;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4A5568;
+}
+
+/* Glassmorphism Effects */
+.glass-panel {
+  background: rgba(21, 27, 43, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+.glass-morphism {
+  background: rgba(28, 39, 35, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Ambient Glow Effect */
+.ambient-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(16, 183, 127, 0.12) 0%, rgba(16, 183, 127, 0) 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Map Pattern Background */
+.map-bg {
+  background-color: #0B0F19;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(16, 183, 127, 0.05) 0%, transparent 50%),
+    linear-gradient(rgba(11, 15, 25, 0.3) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(11, 15, 25, 0.3) 2px, transparent 2px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* Particle Background */
+.particle-bg {
+  background-image: radial-gradient(circle at 2px 2px, rgba(16, 183, 127, 0.15) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+/* Turbine Glow Effect */
+.turbine-glow {
+  filter: drop-shadow(0 0 15px rgba(16, 183, 127, 0.4));
+}
+
+/* Sidebar Active Glow */
+.sidebar-glow {
+  box-shadow: 0 0 15px rgba(16, 183, 127, 0.15);
+}
+
+/* Material Icons - Active Fill */
+.material-symbols-outlined.active-fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Bell Curve Background */
+.bell-curve-bg {
+  background: linear-gradient(180deg, rgba(16, 183, 127, 0.05) 0%, rgba(11, 15, 25, 0) 100%);
+}
+
+/* Custom Animations */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Windmill rotation animation */
+.windmill-rotate {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: spin 8s linear infinite;
+}
+
+/* Prospecting Map Enhancements */
+.wind-rose-shadow {
+  filter: drop-shadow(0 0 30px rgba(16, 183, 127, 0.5));
+}
+
+.map-marker-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+

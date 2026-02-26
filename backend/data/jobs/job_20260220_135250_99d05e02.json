@@ -1,0 +1,14 @@
+{
+  "job_id": "job_20260220_135250_99d05e02",
+  "session_id": "b5ae7be5-b3e8-4a38-a11e-7c5d08af9031",
+  "analysis_type": "full_analysis",
+  "status": "completed",
+  "progress": 100,
+  "message": "Analysis completed successfully",
+  "created_at": "2026-02-20 13:52:50.139029",
+  "started_at": "2026-02-20 13:52:50.142323",
+  "completed_at": "2026-02-20 13:52:52.811251",
+  "error": null,
+  "result_path": "data\\results\\job_20260220_135250_99d05e02\\results.json",
+  "metadata": {}
+}

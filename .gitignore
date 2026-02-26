@@ -1,0 +1,22 @@
+# Node.js dependencies
+node_modules/
+frontend/node_modules/
+
+# Python virtual environments
+venv/
+.venv/
+backend/venv/
+backend/.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files (optional, remove if you want to upload .env)
+# .env
+# frontend/.env
+# backend/.env

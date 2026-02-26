@@ -1,0 +1,1160 @@
+{
+  "analysis_type": "full_analysis",
+  "timestamp": "2026-02-20T13:49:26.174329",
+  "aep": {
+    "analysis_type": "aep",
+    "timestamp": "2026-02-20T13:49:25.846492",
+    "aep_gwh": 150.0,
+    "p50_gwh": 150.12,
+    "p90_gwh": 134.71,
+    "p10_gwh": 165.53,
+    "uncertainty_percent": 20.53,
+    "confidence_level": 0.95,
+    "num_simulations": 10000,
+    "distribution": {
+      "mean": 150.19,
+      "std": 11.95,
+      "min": 107.36,
+      "max": 202.66
+    },
+    "monthly_breakdown": [
+      {
+        "month": "Jan",
+        "energy_gwh": 14.69,
+        "percentage": 9.8
+      },
+      {
+        "month": "Feb",
+        "energy_gwh": 14.31,
+        "percentage": 9.5
+      },
+      {
+        "month": "Mar",
+        "energy_gwh": 13.8,
+        "percentage": 9.2
+      },
+      {
+        "month": "Apr",
+        "energy_gwh": 12.14,
+        "percentage": 8.1
+      },
+      {
+        "month": "May",
+        "energy_gwh": 10.86,
+        "percentage": 7.2
+      },
+      {
+        "month": "Jun",
+        "energy_gwh": 10.48,
+        "percentage": 7.0
+      },
+      {
+        "month": "Jul",
+        "energy_gwh": 10.22,
+        "percentage": 6.8
+      },
+      {
+        "month": "Aug",
+        "energy_gwh": 10.48,
+        "percentage": 7.0
+      },
+      {
+        "month": "Sep",
+        "energy_gwh": 11.5,
+        "percentage": 7.7
+      },
+      {
+        "month": "Oct",
+        "energy_gwh": 12.78,
+        "percentage": 8.5
+      },
+      {
+        "month": "Nov",
+        "energy_gwh": 14.05,
+        "percentage": 9.4
+      },
+      {
+        "month": "Dec",
+        "energy_gwh": 14.69,
+        "percentage": 9.8
+      }
+    ]
+  },
+  "wake_losses": {
+    "analysis_type": "wake_loss",
+    "timestamp": "2026-02-20T13:49:25.861234",
+    "plant_wake_loss_percent": 8.5,
+    "turbine_wake_losses": [
+      {
+        "turbine_id": "T01",
+        "turbine_name": "Turbine-01",
+        "wake_loss_percent": 5.38,
+        "gross_energy_mwh": 7554.9,
+        "net_energy_mwh": 6737.45,
+        "freestream_ratio": 0.946
+      },
+      {
+        "turbine_id": "T02",
+        "turbine_name": "Turbine-02",
+        "wake_loss_percent": 2.37,
+        "gross_energy_mwh": 7292.2,
+        "net_energy_mwh": 7491.35,
+        "freestream_ratio": 0.976
+      },
+      {
+        "turbine_id": "T03",
+        "turbine_name": "Turbine-03",
+        "wake_loss_percent": 4.87,
+        "gross_energy_mwh": 7749.89,
+        "net_energy_mwh": 7342.73,
+        "freestream_ratio": 0.951
+      },
+      {
+        "turbine_id": "T04",
+        "turbine_name": "Turbine-04",
+        "wake_loss_percent": 7.83,
+        "gross_energy_mwh": 7564.07,
+        "net_energy_mwh": 6632.91,
+        "freestream_ratio": 0.922
+      },
+      {
+        "turbine_id": "T05",
+        "turbine_name": "Turbine-05",
+        "wake_loss_percent": 6.16,
+        "gross_energy_mwh": 7008.98,
+        "net_energy_mwh": 7019.84,
+        "freestream_ratio": 0.938
+      },
+      {
+        "turbine_id": "T06",
+        "turbine_name": "Turbine-06",
+        "wake_loss_percent": 8.15,
+        "gross_energy_mwh": 7227.84,
+        "net_energy_mwh": 8112.49,
+        "freestream_ratio": 0.919
+      },
+      {
+        "turbine_id": "T07",
+        "turbine_name": "Turbine-07",
+        "wake_loss_percent": 5.31,
+        "gross_energy_mwh": 7406.16,
+        "net_energy_mwh": 6385.92,
+        "freestream_ratio": 0.947
+      },
+      {
+        "turbine_id": "T08",
+        "turbine_name": "Turbine-08",
+        "wake_loss_percent": 5.89,
+        "gross_energy_mwh": 7387.6,
+        "net_energy_mwh": 6019.63,
+        "freestream_ratio": 0.941
+      },
+      {
+        "turbine_id": "T09",
+        "turbine_name": "Turbine-09",
+        "wake_loss_percent": 9.18,
+        "gross_energy_mwh": 6860.95,
+        "net_energy_mwh": 6795.92,
+        "freestream_ratio": 0.908
+      },
+      {
+        "turbine_id": "T10",
+        "turbine_name": "Turbine-10",
+        "wake_loss_percent": 3.73,
+        "gross_energy_mwh": 8450.0,
+        "net_energy_mwh": 6778.86,
+        "freestream_ratio": 0.963
+      },
+      {
+        "turbine_id": "T11",
+        "turbine_name": "Turbine-11",
+        "wake_loss_percent": 4.68,
+        "gross_energy_mwh": 7586.58,
+        "net_energy_mwh": 7280.3,
+        "freestream_ratio": 0.953
+      },
+      {
+        "turbine_id": "T12",
+        "turbine_name": "Turbine-12",
+        "wake_loss_percent": 8.73,
+        "gross_energy_mwh": 7554.22,
+        "net_energy_mwh": 6633.04,
+        "freestream_ratio": 0.913
+      },
+      {
+        "turbine_id": "T13",
+        "turbine_name": "Turbine-13",
+        "wake_loss_percent": 4.34,
+        "gross_energy_mwh": 8468.98,
+        "net_energy_mwh": 6222.05,
+        "freestream_ratio": 0.957
+      },
+      {
+        "turbine_id": "T14",
+        "turbine_name": "Turbine-14",
+        "wake_loss_percent": 3.32,
+        "gross_energy_mwh": 7481.86,
+        "net_energy_mwh": 6904.53,
+        "freestream_ratio": 0.967
+      },
+      {
+        "turbine_id": "T15",
+        "turbine_name": "Turbine-15",
+        "wake_loss_percent": 6.73,
+        "gross_energy_mwh": 7723.2,
+        "net_energy_mwh": 7065.4,
+        "freestream_ratio": 0.933
+      },
+      {
+        "turbine_id": "T16",
+        "turbine_name": "Turbine-16",
+        "wake_loss_percent": 5.42,
+        "gross_energy_mwh": 6968.85,
+        "net_energy_mwh": 7254.35,
+        "freestream_ratio": 0.946
+      },
+      {
+        "turbine_id": "T17",
+        "turbine_name": "Turbine-17",
+        "wake_loss_percent": 4.69,
+        "gross_energy_mwh": 7401.48,
+        "net_energy_mwh": 7431.4,
+        "freestream_ratio": 0.953
+      },
+      {
+        "turbine_id": "T18",
+        "turbine_name": "Turbine-18",
+        "wake_loss_percent": 4.96,
+        "gross_energy_mwh": 8197.45,
+        "net_energy_mwh": 7535.32,
+        "freestream_ratio": 0.95
+      },
+      {
+        "turbine_id": "T19",
+        "turbine_name": "Turbine-19",
+        "wake_loss_percent": 5.29,
+        "gross_energy_mwh": 7215.38,
+        "net_energy_mwh": 7105.9,
+        "freestream_ratio": 0.947
+      },
+      {
+        "turbine_id": "T20",
+        "turbine_name": "Turbine-20",
+        "wake_loss_percent": 7.53,
+        "gross_energy_mwh": 7149.63,
+        "net_energy_mwh": 6640.26,
+        "freestream_ratio": 0.925
+      }
+    ],
+    "summary": {
+      "avg_wake_loss_percent": 5.73,
+      "min_wake_loss_percent": 2.37,
+      "max_wake_loss_percent": 9.18,
+      "total_energy_loss_gwh": 11.94
+    },
+    "wake_map": {
+      "grid_size": [
+        4,
+        5
+      ],
+      "wake_intensity": [
+        5.38,
+        2.37,
+        4.87,
+        7.83,
+        6.16,
+        8.15,
+        5.31,
+        5.89,
+        9.18,
+        3.73,
+        4.68,
+        8.73,
+        4.34,
+        3.32,
+        6.73,
+        5.42,
+        4.69,
+        4.96,
+        5.29,
+        7.53
+      ],
+      "turbine_positions": [
+        {
+          "x": 0,
+          "y": 0,
+          "turbine_id": "T01"
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "turbine_id": "T02"
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "turbine_id": "T03"
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "turbine_id": "T04"
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "turbine_id": "T05"
+        },
+        {
+          "x": 0,
+          "y": 1,
+          "turbine_id": "T06"
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "turbine_id": "T07"
+        },
+        {
+          "x": 2,
+          "y": 1,
+          "turbine_id": "T08"
+        },
+        {
+          "x": 3,
+          "y": 1,
+          "turbine_id": "T09"
+        },
+        {
+          "x": 4,
+          "y": 1,
+          "turbine_id": "T10"
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "turbine_id": "T11"
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "turbine_id": "T12"
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "turbine_id": "T13"
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "turbine_id": "T14"
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "turbine_id": "T15"
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "turbine_id": "T16"
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "turbine_id": "T17"
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "turbine_id": "T18"
+        },
+        {
+          "x": 3,
+          "y": 3,
+          "turbine_id": "T19"
+        },
+        {
+          "x": 4,
+          "y": 3,
+          "turbine_id": "T20"
+        }
+      ]
+    }
+  },
+  "electrical_losses": {
+    "analysis_type": "electrical_loss",
+    "timestamp": "2026-02-20T13:49:25.973665",
+    "electrical_loss_percent": 1.8,
+    "turbine_energy_gwh": 147.78,
+    "meter_energy_gwh": 145.12,
+    "loss_gwh": 2.66,
+    "monthly_breakdown": [
+      {
+        "month": "Jan",
+        "turbine_energy_gwh": 18.02,
+        "meter_energy_gwh": 17.69,
+        "loss_gwh": 0.324,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Feb",
+        "turbine_energy_gwh": 18.06,
+        "meter_energy_gwh": 17.73,
+        "loss_gwh": 0.325,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Mar",
+        "turbine_energy_gwh": 12.67,
+        "meter_energy_gwh": 12.44,
+        "loss_gwh": 0.228,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Apr",
+        "turbine_energy_gwh": 9.65,
+        "meter_energy_gwh": 9.48,
+        "loss_gwh": 0.174,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "May",
+        "turbine_energy_gwh": 12.75,
+        "meter_energy_gwh": 12.52,
+        "loss_gwh": 0.23,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Jun",
+        "turbine_energy_gwh": 8.62,
+        "meter_energy_gwh": 8.47,
+        "loss_gwh": 0.155,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Jul",
+        "turbine_energy_gwh": 9.37,
+        "meter_energy_gwh": 9.2,
+        "loss_gwh": 0.169,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Aug",
+        "turbine_energy_gwh": 8.41,
+        "meter_energy_gwh": 8.26,
+        "loss_gwh": 0.151,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Sep",
+        "turbine_energy_gwh": 11.02,
+        "meter_energy_gwh": 10.83,
+        "loss_gwh": 0.198,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Oct",
+        "turbine_energy_gwh": 7.94,
+        "meter_energy_gwh": 7.79,
+        "loss_gwh": 0.143,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Nov",
+        "turbine_energy_gwh": 14.07,
+        "meter_energy_gwh": 13.82,
+        "loss_gwh": 0.253,
+        "loss_percent": 1.8
+      },
+      {
+        "month": "Dec",
+        "turbine_energy_gwh": 17.19,
+        "meter_energy_gwh": 16.88,
+        "loss_gwh": 0.309,
+        "loss_percent": 1.8
+      }
+    ],
+    "loss_categories": {
+      "transformer_losses": 0.99,
+      "cable_losses": 0.54,
+      "connection_losses": 0.27
+    },
+    "summary": {
+      "avg_monthly_loss_percent": 1.8,
+      "max_monthly_loss_percent": 1.8,
+      "min_monthly_loss_percent": 1.8
+    }
+  },
+  "power_curve": {
+    "analysis_type": "power_curve",
+    "timestamp": "2026-02-20T13:49:25.991466",
+    "turbine_id": "All",
+    "observed_curve": [
+      {
+        "wind_speed": 0.0,
+        "power": 0
+      },
+      {
+        "wind_speed": 0.5,
+        "power": 0
+      },
+      {
+        "wind_speed": 1.0,
+        "power": 0
+      },
+      {
+        "wind_speed": 1.5,
+        "power": 0
+      },
+      {
+        "wind_speed": 2.0,
+        "power": 0
+      },
+      {
+        "wind_speed": 2.5,
+        "power": 0
+      },
+      {
+        "wind_speed": 3.0,
+        "power": 0
+      },
+      {
+        "wind_speed": 3.5,
+        "power": 0.5
+      },
+      {
+        "wind_speed": 4.0,
+        "power": 3.8
+      },
+      {
+        "wind_speed": 4.5,
+        "power": 13.4
+      },
+      {
+        "wind_speed": 5.0,
+        "power": 30.9
+      },
+      {
+        "wind_speed": 5.5,
+        "power": 57.7
+      },
+      {
+        "wind_speed": 6.0,
+        "power": 105.9
+      },
+      {
+        "wind_speed": 6.5,
+        "power": 167.8
+      },
+      {
+        "wind_speed": 7.0,
+        "power": 270.2
+      },
+      {
+        "wind_speed": 7.5,
+        "power": 361.3
+      },
+      {
+        "wind_speed": 8.0,
+        "power": 455.3
+      },
+      {
+        "wind_speed": 8.5,
+        "power": 669.4
+      },
+      {
+        "wind_speed": 9.0,
+        "power": 919.2
+      },
+      {
+        "wind_speed": 9.5,
+        "power": 1092.8
+      },
+      {
+        "wind_speed": 10.0,
+        "power": 1311.9
+      },
+      {
+        "wind_speed": 10.5,
+        "power": 1814.5
+      },
+      {
+        "wind_speed": 11.0,
+        "power": 2096.8
+      },
+      {
+        "wind_speed": 11.5,
+        "power": 2316.9
+      },
+      {
+        "wind_speed": 12.0,
+        "power": 2774.4
+      },
+      {
+        "wind_speed": 12.5,
+        "power": 3314.3
+      },
+      {
+        "wind_speed": 13.0,
+        "power": 3321.1
+      },
+      {
+        "wind_speed": 13.5,
+        "power": 3298.1
+      },
+      {
+        "wind_speed": 14.0,
+        "power": 3289.5
+      },
+      {
+        "wind_speed": 14.5,
+        "power": 3307.5
+      },
+      {
+        "wind_speed": 15.0,
+        "power": 3283.0
+      },
+      {
+        "wind_speed": 15.5,
+        "power": 3476.7
+      },
+      {
+        "wind_speed": 16.0,
+        "power": 3584.7
+      },
+      {
+        "wind_speed": 16.5,
+        "power": 3543.8
+      },
+      {
+        "wind_speed": 17.0,
+        "power": 3530.9
+      },
+      {
+        "wind_speed": 17.5,
+        "power": 3521.3
+      },
+      {
+        "wind_speed": 18.0,
+        "power": 3580.4
+      },
+      {
+        "wind_speed": 18.5,
+        "power": 3630.1
+      },
+      {
+        "wind_speed": 19.0,
+        "power": 3572.5
+      },
+      {
+        "wind_speed": 19.5,
+        "power": 3372.4
+      },
+      {
+        "wind_speed": 20.0,
+        "power": 3360.5
+      },
+      {
+        "wind_speed": 20.5,
+        "power": 3383.8
+      },
+      {
+        "wind_speed": 21.0,
+        "power": 3045.9
+      },
+      {
+        "wind_speed": 21.5,
+        "power": 3627.4
+      },
+      {
+        "wind_speed": 22.0,
+        "power": 3441.0
+      },
+      {
+        "wind_speed": 22.5,
+        "power": 3403.6
+      },
+      {
+        "wind_speed": 23.0,
+        "power": 3538.9
+      },
+      {
+        "wind_speed": 23.5,
+        "power": 3329.4
+      },
+      {
+        "wind_speed": 24.0,
+        "power": 3443.1
+      },
+      {
+        "wind_speed": 24.5,
+        "power": 3383.8
+      },
+      {
+        "wind_speed": 25.0,
+        "power": 0
+      },
+      {
+        "wind_speed": 25.5,
+        "power": 0
+      }
+    ],
+    "warranted_curve": [
+      {
+        "wind_speed": 0.0,
+        "power": 0
+      },
+      {
+        "wind_speed": 0.5,
+        "power": 0
+      },
+      {
+        "wind_speed": 1.0,
+        "power": 0
+      },
+      {
+        "wind_speed": 1.5,
+        "power": 0
+      },
+      {
+        "wind_speed": 2.0,
+        "power": 0
+      },
+      {
+        "wind_speed": 2.5,
+        "power": 0
+      },
+      {
+        "wind_speed": 3.0,
+        "power": 0.0
+      },
+      {
+        "wind_speed": 3.5,
+        "power": 0.5
+      },
+      {
+        "wind_speed": 4.0,
+        "power": 4.0
+      },
+      {
+        "wind_speed": 4.5,
+        "power": 13.4
+      },
+      {
+        "wind_speed": 5.0,
+        "power": 31.7
+      },
+      {
+        "wind_speed": 5.5,
+        "power": 62.0
+      },
+      {
+        "wind_speed": 6.0,
+        "power": 107.1
+      },
+      {
+        "wind_speed": 6.5,
+        "power": 170.0
+      },
+      {
+        "wind_speed": 7.0,
+        "power": 253.8
+      },
+      {
+        "wind_speed": 7.5,
+        "power": 361.4
+      },
+      {
+        "wind_speed": 8.0,
+        "power": 495.7
+      },
+      {
+        "wind_speed": 8.5,
+        "power": 659.8
+      },
+      {
+        "wind_speed": 9.0,
+        "power": 856.6
+      },
+      {
+        "wind_speed": 9.5,
+        "power": 1089.1
+      },
+      {
+        "wind_speed": 10.0,
+        "power": 1360.2
+      },
+      {
+        "wind_speed": 10.5,
+        "power": 1673.0
+      },
+      {
+        "wind_speed": 11.0,
+        "power": 2030.4
+      },
+      {
+        "wind_speed": 11.5,
+        "power": 2435.4
+      },
+      {
+        "wind_speed": 12.0,
+        "power": 2890.9
+      },
+      {
+        "wind_speed": 12.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 13.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 13.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 14.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 14.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 15.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 15.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 16.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 16.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 17.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 17.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 18.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 18.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 19.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 19.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 20.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 20.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 21.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 21.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 22.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 22.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 23.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 23.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 24.0,
+        "power": 3400
+      },
+      {
+        "wind_speed": 24.5,
+        "power": 3400
+      },
+      {
+        "wind_speed": 25.0,
+        "power": 0
+      },
+      {
+        "wind_speed": 25.5,
+        "power": 0
+      }
+    ],
+    "performance_gap_percent": 1.59,
+    "wind_distribution": [
+      {
+        "wind_speed": 0.0,
+        "frequency_percent": 0,
+        "hours_per_year": 0
+      },
+      {
+        "wind_speed": 1.0,
+        "frequency_percent": 3.08,
+        "hours_per_year": 270.0
+      },
+      {
+        "wind_speed": 2.0,
+        "frequency_percent": 5.87,
+        "hours_per_year": 514.0
+      },
+      {
+        "wind_speed": 3.0,
+        "frequency_percent": 8.15,
+        "hours_per_year": 714.0
+      },
+      {
+        "wind_speed": 4.0,
+        "frequency_percent": 9.74,
+        "hours_per_year": 853.0
+      },
+      {
+        "wind_speed": 5.0,
+        "frequency_percent": 10.57,
+        "hours_per_year": 926.0
+      },
+      {
+        "wind_speed": 6.0,
+        "frequency_percent": 10.68,
+        "hours_per_year": 936.0
+      },
+      {
+        "wind_speed": 7.0,
+        "frequency_percent": 10.17,
+        "hours_per_year": 891.0
+      },
+      {
+        "wind_speed": 8.0,
+        "frequency_percent": 9.2,
+        "hours_per_year": 806.0
+      },
+      {
+        "wind_speed": 9.0,
+        "frequency_percent": 7.93,
+        "hours_per_year": 695.0
+      },
+      {
+        "wind_speed": 10.0,
+        "frequency_percent": 6.55,
+        "hours_per_year": 574.0
+      },
+      {
+        "wind_speed": 11.0,
+        "frequency_percent": 5.19,
+        "hours_per_year": 455.0
+      },
+      {
+        "wind_speed": 12.0,
+        "frequency_percent": 3.95,
+        "hours_per_year": 346.0
+      },
+      {
+        "wind_speed": 13.0,
+        "frequency_percent": 2.9,
+        "hours_per_year": 254.0
+      },
+      {
+        "wind_speed": 14.0,
+        "frequency_percent": 2.05,
+        "hours_per_year": 179.0
+      },
+      {
+        "wind_speed": 15.0,
+        "frequency_percent": 1.39,
+        "hours_per_year": 122.0
+      },
+      {
+        "wind_speed": 16.0,
+        "frequency_percent": 0.92,
+        "hours_per_year": 80.0
+      },
+      {
+        "wind_speed": 17.0,
+        "frequency_percent": 0.58,
+        "hours_per_year": 51.0
+      },
+      {
+        "wind_speed": 18.0,
+        "frequency_percent": 0.36,
+        "hours_per_year": 31.0
+      },
+      {
+        "wind_speed": 19.0,
+        "frequency_percent": 0.21,
+        "hours_per_year": 18.0
+      },
+      {
+        "wind_speed": 20.0,
+        "frequency_percent": 0.12,
+        "hours_per_year": 11.0
+      },
+      {
+        "wind_speed": 21.0,
+        "frequency_percent": 0.07,
+        "hours_per_year": 6.0
+      },
+      {
+        "wind_speed": 22.0,
+        "frequency_percent": 0.04,
+        "hours_per_year": 3.0
+      },
+      {
+        "wind_speed": 23.0,
+        "frequency_percent": 0.02,
+        "hours_per_year": 2.0
+      },
+      {
+        "wind_speed": 24.0,
+        "frequency_percent": 0.01,
+        "hours_per_year": 1.0
+      },
+      {
+        "wind_speed": 25.0,
+        "frequency_percent": 0.0,
+        "hours_per_year": 0.0
+      }
+    ],
+    "turbulence_intensity": 0.084,
+    "outliers_count": 158,
+    "data_points": 31366,
+    "statistics": {
+      "rated_power_kw": 3400,
+      "cut_in_speed_ms": 3.0,
+      "cut_out_speed_ms": 25.0,
+      "rated_wind_speed_ms": 12.5,
+      "capacity_factor_percent": 35.2
+    }
+  },
+  "turbine_ideal_energy": {
+    "analysis_type": "turbine_ideal_energy",
+    "timestamp": "2026-02-20T13:49:26.158629",
+    "total_ideal_energy_gwh": 147.78,
+    "num_turbines": 4,
+    "turbine_data": [
+      {
+        "turbine_id": "R80736",
+        "turbine_name": "Turbine-R80736",
+        "ideal_energy_gwh": 35.688,
+        "capacity_mw": 3.4,
+        "capacity_factor_percent": 119.82,
+        "max_theoretical_gwh": 29.78,
+        "wind_resource_index": 0.966
+      },
+      {
+        "turbine_id": "R80721",
+        "turbine_name": "Turbine-R80721",
+        "ideal_energy_gwh": 32.61,
+        "capacity_mw": 3.4,
+        "capacity_factor_percent": 109.49,
+        "max_theoretical_gwh": 29.78,
+        "wind_resource_index": 0.883
+      },
+      {
+        "turbine_id": "R80790",
+        "turbine_name": "Turbine-R80790",
+        "ideal_energy_gwh": 37.761,
+        "capacity_mw": 3.4,
+        "capacity_factor_percent": 126.78,
+        "max_theoretical_gwh": 29.78,
+        "wind_resource_index": 1.022
+      },
+      {
+        "turbine_id": "R80711",
+        "turbine_name": "Turbine-R80711",
+        "ideal_energy_gwh": 41.719,
+        "capacity_mw": 3.4,
+        "capacity_factor_percent": 140.07,
+        "max_theoretical_gwh": 29.78,
+        "wind_resource_index": 1.129
+      }
+    ],
+    "summary": {
+      "avg_turbine_energy_gwh": 36.94,
+      "min_turbine_energy_gwh": 32.61,
+      "max_turbine_energy_gwh": 41.72,
+      "std_deviation_gwh": 3.31
+    }
+  },
+  "energy_yield": {
+    "waterfall": [
+      {
+        "category": "Potential Energy",
+        "value": 150.0,
+        "percentage": 100.0
+      },
+      {
+        "category": "Wake Losses",
+        "value": -12.75,
+        "percentage": -8.5
+      },
+      {
+        "category": "After Wake",
+        "value": 137.25,
+        "percentage": 91.5
+      },
+      {
+        "category": "Electrical Losses",
+        "value": -2.47,
+        "percentage": -1.8
+      },
+      {
+        "category": "Net Energy",
+        "value": 134.78,
+        "percentage": 89.9
+      }
+    ],
+    "summary": {
+      "potential_gwh": 150.0,
+      "net_energy_gwh": 134.78,
+      "total_losses_gwh": 15.22,
+      "total_losses_percent": 10.15
+    }
+  },
+  "financial": {
+    "production_model": {
+      "p50_energy_gwh": 150.12,
+      "p90_energy_gwh": 134.71,
+      "uncertainty_percent": 20.53
+    },
+    "revenue_model": {
+      "electricity_price_usd_mwh": 45.0,
+      "p50_revenue_usd": 6755400.0,
+      "p90_revenue_usd": 6061950.0,
+      "revenue_at_risk_usd": 693450.0
+    },
+    "risk_metrics": {
+      "production_variance": 10.27,
+      "confidence_level": 0.95
+    }
+  }
+}
