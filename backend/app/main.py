@@ -1,9 +1,10 @@
 """
 FastAPI Main Application - WindOps Pro
 """
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 from app.config import settings
 from app.api import auth, upload, analysis, jobs, results, turbines, maintenance, prospecting
 
@@ -15,6 +16,16 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc"
 )
+
+# Custom middleware to add COOP header for Google OAuth popup support
+class COOPMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["Cross-Origin-Opener-Policy"] = "same-origin-allow-popups"
+        return response
+
+# Add COOP middleware first
+app.add_middleware(COOPMiddleware)
 
 # CORS Middleware
 app.add_middleware(

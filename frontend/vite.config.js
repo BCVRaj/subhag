@@ -12,6 +12,7 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    allowedHosts: true,  // Allow connections from any host (needed for deployment)
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
