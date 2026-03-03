@@ -6,6 +6,7 @@ import { useSearchParams } from 'react-router-dom'
 import Sidebar from '../components/common/Sidebar'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import { resultsAPI } from '../services/api'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 
 export default function FinancialPage() {
   const [searchParams] = useSearchParams()
@@ -204,7 +205,255 @@ export default function FinancialPage() {
         
         {/* Dashboard Body */}
         <div className="p-8 space-y-8 max-w-7xl mx-auto w-full">
-          {/* Metric Summary Row */}
+          {/* Comprehensive AEP Analysis Cards */}
+          <div className="bg-gradient-to-br from-surface-dark to-surface-darker rounded-xl shadow-2xl p-6 border border-white/10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-primary/20 rounded-lg">
+                <span className="material-symbols-outlined text-primary text-xl">analytics</span>
+              </div>
+              <div>
+                <h3 className="text-white font-bold text-lg">Annual Energy Production (AEP) Analysis</h3>
+                <p className="text-slate-400 text-sm">Comprehensive production metrics with uncertainty quantification</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Mean AEP */}
+              <div className="bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/30 p-5 rounded-xl hover:shadow-lg hover:shadow-blue-400/20 hover:scale-105 transition-all group">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-blue-500/20 rounded-lg">
+                    <span className="material-symbols-outlined text-blue-400 text-lg">bar_chart</span>
+                  </div>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    Mean AEP
+                  </p>
+                </div>
+                <h3 className="text-3xl font-black text-white mb-1">
+                  {financialData?.mean_aep_gwh?.toFixed(2) || '0.00'}
+                </h3>
+                <p className="text-slate-500 text-sm font-bold">GWh/yr</p>
+              </div>
+
+              {/* P50 (Median) */}
+              <div className="bg-gradient-to-br from-cyan-500/10 to-cyan-600/5 border border-cyan-500/30 p-5 rounded-xl hover:shadow-lg hover:shadow-cyan-400/20 hover:scale-105 transition-all group">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-cyan-500/20 rounded-lg">
+                    <span className="material-symbols-outlined text-cyan-400 text-lg">trending_flat</span>
+                  </div>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    P50 (Median)
+                  </p>
+                </div>
+                <h3 className="text-3xl font-black text-white mb-1">
+                  {financialData?.p50_energy_gwh?.toFixed(2) || '0.00'}
+                </h3>
+                <p className="text-slate-500 text-sm font-bold">GWh/yr</p>
+              </div>
+
+              {/* P90 (Conservative) */}
+              <div className="bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/30 p-5 rounded-xl hover:shadow-lg hover:shadow-green-400/20 hover:scale-105 transition-all group">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-green-500/20 rounded-lg">
+                    <span className="material-symbols-outlined text-green-400 text-lg">shield</span>
+                  </div>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    P90 (Conservative)
+                  </p>
+                </div>
+                <h3 className="text-3xl font-black text-white mb-1">
+                  {financialData?.p90_energy_gwh?.toFixed(2) || '0.00'}
+                </h3>
+                <p className="text-slate-500 text-sm font-bold">GWh/yr</p>
+              </div>
+
+              {/* Capacity Factor */}
+              <div className="bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/30 p-5 rounded-xl hover:shadow-lg hover:shadow-purple-400/20 hover:scale-105 transition-all group">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-purple-500/20 rounded-lg">
+                    <span className="material-symbols-outlined text-purple-400 text-lg">speed</span>
+                  </div>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    Capacity Factor
+                  </p>
+                </div>
+                <h3 className="text-3xl font-black text-white mb-1">
+                  {financialData?.capacity_factor?.toFixed(1) || '0.0'}
+                </h3>
+                <p className="text-slate-500 text-sm font-bold">%</p>
+              </div>
+
+              {/* Uncertainty (±1σ) */}
+              <div className="bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/30 p-5 rounded-xl hover:shadow-lg hover:shadow-amber-400/20 hover:scale-105 transition-all group">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-amber-500/20 rounded-lg">
+                    <span className="material-symbols-outlined text-amber-400 text-lg">stacked_line_chart</span>
+                  </div>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    Uncertainty (±1σ)
+                  </p>
+                </div>
+                <h3 className="text-3xl font-black text-white mb-1">
+                  {financialData?.uncertainty_gwh?.toFixed(3) || '0.000'}
+                </h3>
+                <p className="text-slate-500 text-sm font-bold">GWh ({financialData?.uncertainty_percent?.toFixed(1) || '0.0'}%)</p>
+              </div>
+
+              {/* P5 / P95 */}
+              <div className="bg-gradient-to-br from-indigo-500/10 to-indigo-600/5 border border-indigo-500/30 p-5 rounded-xl hover:shadow-lg hover:shadow-indigo-400/20 hover:scale-105 transition-all group">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-indigo-500/20 rounded-lg">
+                    <span className="material-symbols-outlined text-indigo-400 text-lg">double_arrow</span>
+                  </div>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    P5 / P95
+                  </p>
+                </div>
+                <h3 className="text-2xl font-black text-white mb-1">
+                  {financialData?.p5_energy_gwh?.toFixed(2) || '0.00'} / {financialData?.p95_energy_gwh?.toFixed(2) || '0.00'}
+                </h3>
+                <p className="text-slate-500 text-sm font-bold">GWh</p>
+              </div>
+
+              {/* Availability Loss */}
+              <div className="bg-gradient-to-br from-red-500/10 to-red-600/5 border border-red-500/30 p-5 rounded-xl hover:shadow-lg hover:shadow-red-400/20 hover:scale-105 transition-all group">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-red-500/20 rounded-lg">
+                    <span className="material-symbols-outlined text-red-400 text-lg">error</span>
+                  </div>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    Availability Loss
+                  </p>
+                </div>
+                <h3 className="text-3xl font-black text-white mb-1">
+                  {financialData?.availability_loss_percent?.toFixed(1) || '0.0'}
+                </h3>
+                <p className="text-slate-500 text-sm font-bold">%</p>
+              </div>
+
+              {/* Curtailment Loss */}
+              <div className="bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-500/30 p-5 rounded-xl hover:shadow-lg hover:shadow-orange-400/20 hover:scale-105 transition-all group">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-2 bg-orange-500/20 rounded-lg">
+                    <span className="material-symbols-outlined text-orange-400 text-lg">block</span>
+                  </div>
+                  <p className="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    Curtailment Loss
+                  </p>
+                </div>
+                <h3 className="text-3xl font-black text-white mb-1">
+                  {financialData?.curtailment_loss_percent?.toFixed(1) || '0.0'}
+                </h3>
+                <p className="text-slate-500 text-sm font-bold">%</p>
+              </div>
+            </div>
+          </div>
+
+          {/* AEP Distribution Interactive Histogram */}
+          <div className="bg-gradient-to-br from-surface-dark to-surface-darker rounded-xl shadow-2xl p-6 border border-white/10">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-primary/20 rounded-lg">
+                  <span className="material-symbols-outlined text-primary text-xl">bar_chart_4_bars</span>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-lg">AEP Distribution (Interactive)</h3>
+                  <p className="text-slate-400 text-sm">Probability distribution of annual energy production outcomes</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 bg-primary rounded"></span>
+                  <span className="text-xs text-slate-400 font-medium">Frequency</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-0.5 h-8 bg-green-500"></span>
+                  <span className="text-xs text-slate-400 font-medium">P50</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-0.5 h-8 bg-red-500 border-dashed border"></span>
+                  <span className="text-xs text-slate-400 font-medium">P90</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="h-[400px] relative">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart 
+                  data={financialData?.aep_distribution || []}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                >
+                  <defs>
+                    <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#10b77f" stopOpacity={0.8} />
+                      <stop offset="100%" stopColor="#10b77f" stopOpacity={0.3} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                  <XAxis 
+                    dataKey="aep_gwh" 
+                    stroke="#94a3b8"
+                    fontSize={11}
+                    fontWeight={600}
+                    tickLine={false}
+                    label={{ value: 'Annual Energy Production (GWh/yr)', position: 'bottom', offset: 45, fill: '#94a3b8', fontSize: 12, fontWeight: 700 }}
+                  />
+                  <YAxis 
+                    stroke="#94a3b8"
+                    fontSize={11}
+                    fontWeight={600}
+                    tickLine={false}
+                    label={{ value: 'Frequency', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 12, fontWeight: 700 }}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#1e293b', 
+                      border: '1px solid rgba(16, 183, 127, 0.3)', 
+                      borderRadius: '8px',
+                      boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+                    }}
+                    labelStyle={{ color: '#10b77f', fontWeight: 700 }}
+                    itemStyle={{ color: '#fff' }}
+                    formatter={(value, name, props) => {
+                      if (name === 'frequency') {
+                        return [value, 'Simulations']
+                      }
+                      return [value, name]
+                    }}
+                    labelFormatter={(label) => `AEP: ${label} GWh/yr`}
+                  />
+                  <Bar 
+                    dataKey="frequency" 
+                    fill="url(#barGradient)"
+                    radius={[4, 4, 0, 0]}
+                    isAnimationActive={true}
+                    animationDuration={800}
+                  >
+                    {(financialData?.aep_distribution || []).map((entry, index) => {
+                      const p50 = financialData?.p50_energy_gwh || 0
+                      const p90 = financialData?.p90_energy_gwh || 0
+                      const isP50 = Math.abs(entry.aep_gwh - p50) < 0.3
+                      const isP90 = Math.abs(entry.aep_gwh - p90) < 0.3
+                      
+                      return (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={isP50 ? '#10b77f' : isP90 ? '#ef4444' : 'url(#barGradient)'}
+                          opacity={isP50 || isP90 ? 1 : 0.7}
+                        />
+                      )
+                    })}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-500">
+              <span className="font-medium">Based on {financialData?.risk_metrics?.simulations || 10000} Monte Carlo simulations</span>
+              <span className="font-medium">Mean: {financialData?.mean_aep_gwh?.toFixed(2)} GWh/yr | Std Dev: {financialData?.uncertainty_gwh?.toFixed(3)} GWh</span>
+            </div>
+          </div>
+
+          {/* Original KPI Summary Row - Preserved */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {kpis.map((kpi, idx) => (
               <div key={idx} className="bg-slate-card border border-white/5 p-5 rounded-xl">

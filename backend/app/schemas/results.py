@@ -72,10 +72,28 @@ class TurbinePerformance(BaseModel):
 
 
 class FinancialResults(BaseModel):
-    """Financial analysis results"""
+    """Financial analysis results with comprehensive AEP metrics"""
+    # Core AEP Metrics
+    mean_aep_gwh: float
     p50_energy_gwh: float
     p90_energy_gwh: float
+    p10_energy_gwh: float
+    p5_energy_gwh: float
+    p95_energy_gwh: float
+    
+    # Revenue Metrics
     p50_revenue_usd: float
     p90_revenue_usd: float
+    
+    # Performance Metrics
+    capacity_factor: float
+    uncertainty_gwh: float
     uncertainty_percent: float
+    availability_loss_percent: float
+    curtailment_loss_percent: float
+    
+    # Distribution Data for Histogram
+    aep_distribution: List[Dict[str, Any]]
+    
+    # Risk Metrics
     risk_metrics: Dict[str, Any]
