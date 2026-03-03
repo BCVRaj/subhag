@@ -14,8 +14,8 @@ class FileUploadResponse(BaseModel):
     size_bytes: int
     path: str
     original_filename: Optional[str] = None
-    status: Optional[str] = "uploaded"
-    uploaded_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    status: Optional[str] = None
+    uploaded_at: Optional[datetime] = None
     
     class Config:
         extra = "ignore"  # Allow extra fields without validation error

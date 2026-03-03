@@ -37,9 +37,17 @@ async def upload_file(
     - **file_type**: Type of file (scada/meter/tower)
     """
     try:
+        print(f"📤 Upload request received: file={file.filename}, session={session_id}, type={file_type}")
         result = await FileService.upload_file(file, session_id, file_type)
+        print(f"✅ Upload successful: {result.get('filename')}")
         return FileUploadResponse(**result)
+    except HTTPException as he:
+        print(f"❌ HTTPException during upload: {he.status_code} - {he.detail}")
+        raise
     except Exception as e:
+        print(f"❌ Unexpected error during upload: {type(e).__name__} - {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=400, detail=str(e))
 
 
