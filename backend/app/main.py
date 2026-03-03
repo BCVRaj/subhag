@@ -4,6 +4,7 @@ FastAPI Main Application - WindOps Pro
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from starlette.middleware.base import BaseHTTPMiddleware
 from app.config import settings
 from app.api import auth, upload, analysis, jobs, results, turbines, maintenance, prospecting
@@ -75,6 +76,23 @@ app.include_router(results.router, prefix="/api/results", tags=["Results"])
 app.include_router(turbines.router, prefix="/api/turbines", tags=["Turbines"])
 app.include_router(maintenance.router, prefix="/api/maintenance", tags=["Maintenance"])
 app.include_router(prospecting.router, prefix="/api/prospecting", tags=["Prospecting"])
+
+
+# Validation error handler
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Handle request validation errors with detailed logging"""
+    print(f"❌ Validation Error on {request.method} {request.url}")
+    print(f"   Error details: {exc.errors()}")
+    print(f"   Body: {exc.body}")
+    return JSONResponse(
+        status_code=422,
+        content={
+            "error": "Validation Error",
+            "detail": exc.errors(),
+            "body": exc.body
+        }
+    )
 
 
 # Global exception handler
