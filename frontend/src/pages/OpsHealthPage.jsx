@@ -307,15 +307,23 @@ export default function OpsHealthPage() {
         
         // Generate wind speed distribution from power curve data
         let windSpeedDist = {}
-        if (data.observed_curve && data.observed_curve.length > 0) {
+        if (data.wind_distribution && data.wind_distribution.length > 0) {
+          // Use backend's calculated distribution (from real SCADA data)
+          console.log('📊 Using real wind distribution from SCADA data')
+          data.wind_distribution.forEach(bin => {
+            windSpeedDist[bin.wind_speed] = bin.frequency_percent
+          })
+        } else if (data.observed_curve && data.observed_curve.length > 0) {
+          // Fallback: derive from observed curve bins
+          console.log('⚠️ Fallback: deriving distribution from power curve')
           data.observed_curve.forEach(point => {
             const bin = Math.floor(point.wind_speed / 2.5) * 2.5
             windSpeedDist[bin] = (windSpeedDist[bin] || 0) + 1
           })
           console.log(`📊 Wind speed distribution generated:`, windSpeedDist)
         } else {
-          // Fallback: Create a reasonable distribution if no data
-          console.log('⚠️ No observed curve data, using fallback distribution')
+          // Final fallback: Create demo distribution if no data
+          console.log('⚠️ No data available, using demo distribution')
           windSpeedDist = { 0: 5, 2.5: 15, 5: 25, 7.5: 35, 10: 30, 12.5: 20, 15: 12, 17.5: 8 }
         }
         
