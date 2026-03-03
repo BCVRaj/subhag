@@ -122,14 +122,15 @@ export const resultsAPI = {
   
   getFinancial: (jobId) => apiClient.get(`/results/${jobId}/financial`),
   
-  getLiveFinancial: (lat = 39.45, lon = -119.78, turbineCount = 10, turbineCapacity = 2.5, electricityPrice = 45.0) => 
+  getLiveFinancial: (lat = 39.45, lon = -119.78, turbineCount = 10, turbineCapacity = 2.5, electricityPrice = 45.0, numSimulations = 10000) => 
     apiClient.get('/results/live/financial', { 
       params: { 
         lat, 
         lon, 
         turbine_count: turbineCount,
         turbine_capacity_mw: turbineCapacity,
-        electricity_price: electricityPrice
+        electricity_price: electricityPrice,
+        num_simulations: numSimulations
       } 
     }),
 }

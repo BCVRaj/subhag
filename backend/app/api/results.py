@@ -704,7 +704,8 @@ async def get_live_financial_data(
     lon: float = Query(-119.78, description="Longitude"),
     turbine_count: int = Query(10, description="Number of turbines"),
     turbine_capacity_mw: float = Query(2.5, description="Turbine capacity in MW"),
-    electricity_price: float = Query(45.0, description="Electricity price in USD/MWh")
+    electricity_price: float = Query(45.0, description="Electricity price in USD/MWh"),
+    num_simulations: int = Query(10000, description="Number of Monte Carlo simulations")
 ):
     """
     Get live financial analysis using real NREL/NASA wind data with comprehensive AEP metrics
@@ -733,9 +734,8 @@ async def get_live_financial_data(
         # Use 8% uncertainty as typical for wind resource assessment
         np.random.seed(42)  # For reproducibility
         uncertainty_pct = 8.0
-        num_simulations = 10000
         
-        # Generate distribution
+        # Generate distribution with user-specified simulation count
         simulations = np.random.normal(
             total_net_aep, 
             total_net_aep * (uncertainty_pct / 100),

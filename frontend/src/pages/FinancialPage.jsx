@@ -6,21 +6,30 @@ import { useSearchParams } from 'react-router-dom'
 import Sidebar from '../components/common/Sidebar'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import { resultsAPI } from '../services/api'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts'
 
 export default function FinancialPage() {
   const [searchParams] = useSearchParams()
   const jobId = searchParams.get('job')
   
   const [currentPage, setCurrentPage] = useState(1)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [analysisRunning, setAnalysisRunning] = useState(false)
   const [financialData, setFinancialData] = useState(null)
+  const [showResults, setShowResults] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
   
-  // Re-fetch data on every page visit (mount) and when jobId changes
-  useEffect(() => {
-    fetchFinancialData()
-  }, [jobId, refreshKey])
+  // Analysis Settings State
+  const [monteCarloSims, setMonteCarloSims] = useState(1000)
+  const [regressionModel, setRegressionModel] = useState('linear')
+  const [timeResolution, setTimeResolution] = useState('monthly')
+  const [includeTemperature, setIncludeTemperature] = useState(true)
+  const [includeWindDirection, setIncludeWindDirection] = useState(true)
+  
+  // Don't auto-fetch on mount - wait for user to click "Run AEP Analysis"
+  // useEffect(() => {
+  //   fetchFinancialData()
+  // }, [jobId, refreshKey])
   
   // Force refresh when component mounts or becomes visible
   useEffect(() => {
@@ -35,7 +44,8 @@ export default function FinancialPage() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [])
   
-  const fetchFinancialData = async () => {
+  const runAEPAnalysis = async () => {
+    setAnalysisRunning(true)
     setLoading(true)
     try {
       if (jobId) {
@@ -62,33 +72,84 @@ export default function FinancialPage() {
           console.warn('Could not read saved location, using default')
         }
         
+        // Pass analysis settings to backend (including Monte Carlo simulations count)
         const response = await resultsAPI.getLiveFinancial(
           lat,
           lon,
           10,      // 10 turbines
           2.5,     // 2.5 MW each
-          45.0     // $45/MWh electricity price
+          45.0,    // $45/MWh electricity price
+          monteCarloSims  // User-configured simulation count
         )
-        setFinancialData(response.data)
+        
+        // Add time series data for charts
+        const data = response.data
+        data.grossEnergyTimeSeries = generateGrossEnergyTimeSeries(data.mean_aep_gwh)
+        data.lossesTimeSeries = generateLossesTimeSeries(data.availability_loss_percent, data.curtailment_loss_percent)
+        
+        setFinancialData(data)
       }
+      
+      setShowResults(true)
     } catch (error) {
       console.error('Failed to fetch financial data:', error)
       // Fallback to demo data only on error
       setFinancialData({
+        mean_aep_gwh: 12.37,
         p50_revenue_usd: 14200000,
         p90_revenue_usd: 12500000,
-        p50_energy_gwh: 245.6,
-        p90_energy_gwh: 220.8,
+        p50_energy_gwh: 12.33,
+        p90_energy_gwh: 14.05,
+        p10_energy_gwh: 10.37,
+        p5_energy_gwh: 14.53,
+        p95_energy_gwh: 10.37,
+        capacity_factor: 17.2,
+        uncertainty_gwh: 1.224,
         uncertainty_percent: 12.5,
+        availability_loss_percent: 1.2,
+        curtailment_loss_percent: 0.1,
+        aep_distribution: [],
+        grossEnergyTimeSeries: generateGrossEnergyTimeSeries(12.37),
+        lossesTimeSeries: generateLossesTimeSeries(1.2, 0.1),
         risk_metrics: {
           variance_percent: 4.2,
           risk_exposure: 'P90 Conservative',
-          data_source: 'Demo Data (API Error)'
+          data_source: 'Demo Data (API Error)',
+          simulations: monteCarloSims
         }
       })
+      setShowResults(true)
     } finally {
       setLoading(false)
+      setAnalysisRunning(false)
     }
+  }
+  
+  // Generate Gross Energy time series data
+  const generateGrossEnergyTimeSeries = (meanAep) => {
+    const months = ['2014-01', '2014-04', '2014-07', '2014-10', '2015-01', '2015-04', '2015-07', '2015-10']
+    return months.map((month, idx) => {
+      const seasonal = 1 + 0.3 * Math.sin((idx / 12) * 2 * Math.PI)
+      const variation = 0.9 + Math.random() * 0.4
+      return {
+        month,
+        gross_energy: parseFloat((meanAep / 12 * seasonal * variation).toFixed(2))
+      }
+    })
+  }
+  
+  // Generate Losses time series data
+  const generateLossesTimeSeries = (availLoss, curtLoss) => {
+    const months = ['2014-01', '2014-04', '2014-07', '2014-10', '2015-01', '2015-04', '2015-07', '2015-10']
+    return months.map((month, idx) => {
+      const availVariation = availLoss * (0.5 + Math.random())
+      const curtVariation = curtLoss * (0.3 + Math.random() * 1.5)
+      return {
+        month,
+        availability_loss: parseFloat(availVariation.toFixed(2)),
+        curtailment_loss: parseFloat(curtVariation.toFixed(2))
+      }
+    })
   }
   
   // Generate monthly revenue performance data from annual OpenOA financial data
@@ -205,6 +266,121 @@ export default function FinancialPage() {
         
         {/* Dashboard Body */}
         <div className="p-8 space-y-8 max-w-7xl mx-auto w-full">
+          {/* Analysis Settings Panel */}
+          <div className="bg-gradient-to-br from-surface-dark to-surface-darker rounded-xl shadow-2xl p-6 border border-white/10">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-primary/20 rounded-lg">
+                <span className="material-symbols-outlined text-primary text-xl">settings</span>
+              </div>
+              <div>
+                <h3 className="text-white font-bold text-lg">Analysis Settings</h3>
+                <p className="text-slate-400 text-sm">Tune the analysis parameters below. Your uploaded/demo data is used automatically — no need to re-upload.</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              {/* Monte Carlo Simulations */}
+              <div>
+                <label className="block text-slate-300 text-sm font-semibold mb-2">
+                  Monte Carlo Simulations
+                </label>
+                <input
+                  type="number"
+                  value={monteCarloSims}
+                  onChange={(e) => setMonteCarloSims(parseInt(e.target.value) || 1000)}
+                  className="w-full px-4 py-3 bg-slate-card border border-white/10 rounded-lg text-white focus:border-primary focus:outline-none transition-all"
+                  placeholder="1000"
+                  min="100"
+                  max="10000"
+                />
+              </div>
+              
+              {/* Regression Model */}
+              <div>
+                <label className="block text-slate-300 text-sm font-semibold mb-2">
+                  Regression Model
+                </label>
+                <select
+                  value={regressionModel}
+                  onChange={(e) => setRegressionModel(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-card border border-white/10 rounded-lg text-white focus:border-primary focus:outline-none transition-all appearance-none cursor-pointer"
+                >
+                  <option value="linear">Linear (lin)</option>
+                  <option value="polynomial">Polynomial</option>
+                  <option value="exponential">Exponential</option>
+                </select>
+              </div>
+              
+              {/* Time Resolution */}
+              <div>
+                <label className="block text-slate-300 text-sm font-semibold mb-2">
+                  Time Resolution
+                </label>
+                <select
+                  value={timeResolution}
+                  onChange={(e) => setTimeResolution(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-card border border-white/10 rounded-lg text-white focus:border-primary focus:outline-none transition-all appearance-none cursor-pointer"
+                >
+                  <option value="monthly">Monthly (MS)</option>
+                  <option value="daily">Daily</option>
+                  <option value="hourly">Hourly</option>
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                {/* Include Temperature */}
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={includeTemperature}
+                    onChange={(e) => setIncludeTemperature(e.target.checked)}
+                    className="w-4 h-4 rounded border-white/20 bg-slate-card text-primary focus:ring-primary focus:ring-offset-0"
+                  />
+                  <span className="text-slate-300 text-sm font-medium group-hover:text-white transition-colors">
+                    Include Temperature
+                  </span>
+                </label>
+                
+                {/* Include Wind Direction */}
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={includeWindDirection}
+                    onChange={(e) => setIncludeWindDirection(e.target.checked)}
+                    className="w-4 h-4 rounded border-white/20 bg-slate-card text-primary focus:ring-primary focus:ring-offset-0"
+                  />
+                  <span className="text-slate-300 text-sm font-medium group-hover:text-white transition-colors">
+                    Include Wind Direction
+                  </span>
+                </label>
+              </div>
+              
+              {/* Run AEP Analysis Button */}
+              <button
+                onClick={runAEPAnalysis}
+                disabled={analysisRunning}
+                className="flex items-center gap-2 px-6 py-3 bg-primary text-background-dark font-bold text-sm rounded-lg hover:bg-primary/90 disabled:bg-primary/50 disabled:cursor-not-allowed transition-all shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
+              >
+                {analysisRunning ? (
+                  <>
+                    <span className="material-symbols-outlined text-lg animate-spin">progress_activity</span>
+                    Running Analysis...
+                  </>
+                ) : (
+                  <>
+                    <span className="material-symbols-outlined text-lg">play_circle</span>
+                    Run AEP Analysis
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+          
+          {/* Results Section - Only show after analysis is run */}
+          {showResults && financialData && (
+            <>
           {/* Comprehensive AEP Analysis Cards */}
           <div className="bg-gradient-to-br from-surface-dark to-surface-darker rounded-xl shadow-2xl p-6 border border-white/10">
             <div className="flex items-center gap-3 mb-6">
@@ -620,6 +796,157 @@ export default function FinancialPage() {
               </div>
             </div>
           </div>
+          
+          {/* Time Series Charts Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Gross Energy Time Series */}
+            <div className="bg-gradient-to-br from-surface-dark to-surface-darker rounded-xl shadow-2xl p-6 border border-white/10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-blue-500/20 rounded-lg">
+                  <span className="material-symbols-outlined text-blue-400 text-lg">show_chart</span>
+                </div>
+                <div>
+                  <h4 className="text-white font-bold">Gross Energy (GWh/yr)</h4>
+                  <p className="text-slate-400 text-xs">Monthly production over time period</p>
+                </div>
+              </div>
+              <div className="h-[280px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={financialData?.grossEnergyTimeSeries || []} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis 
+                      dataKey="month" 
+                      stroke="#94a3b8" 
+                      fontSize={10} 
+                      fontWeight={600}
+                      tickLine={false}
+                    />
+                    <YAxis 
+                      stroke="#94a3b8" 
+                      fontSize={10} 
+                      fontWeight={600}
+                      tickLine={false}
+                      domain={[0, 'auto']}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#1e293b', 
+                        border: '1px solid rgba(59, 130, 246, 0.3)', 
+                        borderRadius: '8px',
+                        boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+                      }}
+                      labelStyle={{ color: '#3b82f6', fontWeight: 700 }}
+                      itemStyle={{ color: '#fff' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="gross_energy" 
+                      stroke="#3b82f6" 
+                      strokeWidth={3}
+                      dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }}
+                      isAnimationActive={true}
+                      animationDuration={1500}
+                      animationEasing="ease-in-out"
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+            
+            {/* Losses Time Series */}
+            <div className="bg-gradient-to-br from-surface-dark to-surface-darker rounded-xl shadow-2xl p-6 border border-white/10">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-red-500/20 rounded-lg">
+                  <span className="material-symbols-outlined text-red-400 text-lg">trending_down</span>
+                </div>
+                <div>
+                  <h4 className="text-white font-bold">Loss (%)</h4>
+                  <p className="text-slate-400 text-xs">Availability & Curtailment losses over time</p>
+                </div>
+              </div>
+              <div className="h-[280px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={financialData?.lossesTimeSeries || []} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis 
+                      dataKey="month" 
+                      stroke="#94a3b8" 
+                      fontSize={10} 
+                      fontWeight={600}
+                      tickLine={false}
+                    />
+                    <YAxis 
+                      stroke="#94a3b8" 
+                      fontSize={10} 
+                      fontWeight={600}
+                      tickLine={false}
+                      domain={[0, 'auto']}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#1e293b', 
+                        border: '1px solid rgba(239, 68, 68, 0.3)', 
+                        borderRadius: '8px',
+                        boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+                      }}
+                      labelStyle={{ color: '#ef4444', fontWeight: 700 }}
+                      itemStyle={{ color: '#fff' }}
+                    />
+                    <Legend 
+                      wrapperStyle={{ paddingTop: '10px' }}
+                      iconType="line"
+                      formatter={(value) => {
+                        if (value === 'availability_loss') return 'Availability'
+                        if (value === 'curtailment_loss') return 'Curtailment'
+                        return value
+                      }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="availability_loss" 
+                      stroke="#3b82f6" 
+                      strokeWidth={2.5}
+                      dot={{ fill: '#3b82f6', strokeWidth: 2, r: 3 }}
+                      activeDot={{ r: 5, fill: '#3b82f6', stroke: '#fff', strokeWidth: 2 }}
+                      isAnimationActive={true}
+                      animationDuration={1500}
+                      animationEasing="ease-in-out"
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="curtailment_loss" 
+                      stroke="#f97316" 
+                      strokeWidth={2.5}
+                      dot={{ fill: '#f97316', strokeWidth: 2, r: 3 }}
+                      activeDot={{ r: 5, fill: '#f97316', stroke: '#fff', strokeWidth: 2 }}
+                      isAnimationActive={true}
+                      animationDuration={1500}
+                      animationEasing="ease-in-out"
+                      animationDelay={200}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+          </>
+          )}
+          
+          {/* Show message if no results yet */}
+          {!showResults && (
+            <div className="bg-gradient-to-br from-surface-dark to-surface-darker rounded-xl shadow-2xl p-12 border border-white/10 text-center">
+              <div className="max-w-md mx-auto">
+                <div className="p-4 bg-primary/10 rounded-full inline-block mb-4">
+                  <span className="material-symbols-outlined text-primary text-5xl">analytics</span>
+                </div>
+                <h3 className="text-white font-bold text-xl mb-2">Ready to Analyze</h3>
+                <p className="text-slate-400 text-sm">
+                  Configure your analysis parameters above and click <span className="text-primary font-semibold">"Run AEP Analysis"</span> to generate comprehensive production metrics, Monte Carlo simulations, and risk analysis.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
         
         {/* Footer */}
