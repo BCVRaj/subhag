@@ -12,8 +12,13 @@ class FileUploadResponse(BaseModel):
     filename: str
     file_type: str
     size_bytes: int
-    uploaded_at: datetime = Field(default_factory=datetime.utcnow)
     path: str
+    original_filename: Optional[str] = None
+    status: Optional[str] = "uploaded"
+    uploaded_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        extra = "ignore"  # Allow extra fields without validation error
 
 
 class DataValidationRequest(BaseModel):
@@ -23,6 +28,9 @@ class DataValidationRequest(BaseModel):
     meter_file: Optional[str] = None
     tower_file: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
+    
+    class Config:
+        extra = "ignore"  # Allow extra fields
 
 
 class ValidationResult(BaseModel):
@@ -33,3 +41,7 @@ class ValidationResult(BaseModel):
     column_mapping: Dict[str, str] = Field(default_factory=dict)
     row_count: int = 0
     time_range: Optional[Dict[str, str]] = None
+    files: Optional[Dict[str, Any]] = Field(default_factory=dict)
+    
+    class Config:
+        extra = "ignore"  # Allow extra fields
