@@ -122,7 +122,18 @@ export const resultsAPI = {
   
   getFinancial: (jobId) => apiClient.get(`/results/${jobId}/financial`),
   
-  getLiveFinancial: (lat = 39.45, lon = -119.78, turbineCount = 10, turbineCapacity = 2.5, electricityPrice = 45.0, numSimulations = 10000) => 
+  getLiveFinancial: (
+    lat = 39.45, 
+    lon = -119.78, 
+    turbineCount = 10, 
+    turbineCapacity = 2.5, 
+    electricityPrice = 45.0, 
+    numSimulations = 10000,
+    regressionModel = 'linear',
+    timeResolution = 'monthly',
+    includeTemperature = true,
+    includeWindDirection = true
+  ) => 
     apiClient.get('/results/live/financial', { 
       params: { 
         lat, 
@@ -130,7 +141,11 @@ export const resultsAPI = {
         turbine_count: turbineCount,
         turbine_capacity_mw: turbineCapacity,
         electricity_price: electricityPrice,
-        num_simulations: numSimulations
+        num_simulations: numSimulations,
+        regression_model: regressionModel,
+        time_resolution: timeResolution,
+        include_temperature: includeTemperature,
+        include_wind_direction: includeWindDirection
       } 
     }),
 }

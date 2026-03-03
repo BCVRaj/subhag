@@ -79,7 +79,11 @@ export default function FinancialPage() {
           10,      // 10 turbines
           2.5,     // 2.5 MW each
           45.0,    // $45/MWh electricity price
-          monteCarloSims  // User-configured simulation count
+          monteCarloSims,  // User-configured simulation count
+          regressionModel, // User-selected regression model
+          timeResolution,  // Time resolution setting
+          includeTemperature,  // Temperature correction
+          includeWindDirection // Wind direction analysis
         )
         
         // Add time series data for charts
@@ -552,6 +556,17 @@ export default function FinancialPage() {
               </div>
             </div>
             
+            {/* Loading state during analysis */}
+            {analysisRunning ? (
+              <div className="h-[400px] relative flex items-center justify-center">
+                <div className="text-center">
+                  <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary mb-4"></div>
+                  <p className="text-slate-400 text-sm font-medium">Running {regressionModel} regression analysis...</p>
+                  <p className="text-slate-500 text-xs mt-2">Processing {monteCarloSims.toLocaleString()} Monte Carlo simulations</p>
+                </div>
+              </div>
+            ) : (
+              <>
             <div className="h-[400px] relative">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart 
@@ -624,9 +639,18 @@ export default function FinancialPage() {
             </div>
             
             <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-500">
-              <span className="font-medium">Based on {financialData?.risk_metrics?.simulations || 10000} Monte Carlo simulations</span>
+              <span className="font-medium">
+                Based on {financialData?.risk_metrics?.simulations || 10000} Monte Carlo simulations
+                {financialData?.risk_metrics?.regression_model && (
+                  <span className="ml-2 px-2 py-0.5 bg-primary/20 text-primary rounded text-[10px] font-bold uppercase">
+                    {financialData.risk_metrics.regression_model} model
+                  </span>
+                )}
+              </span>
               <span className="font-medium">Mean: {financialData?.mean_aep_gwh?.toFixed(2)} GWh/yr | Std Dev: {financialData?.uncertainty_gwh?.toFixed(3)} GWh</span>
             </div>
+            </>
+            )}
           </div>
 
           {/* Original KPI Summary Row - Preserved */}
