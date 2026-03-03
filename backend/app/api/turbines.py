@@ -235,9 +235,23 @@ async def get_turbine_telemetry(
     from datetime import datetime, timedelta
     
     try:
-        scada_file = Path("data/uploads/la-haute-borne-data-2014-2015.csv")
-        if not scada_file.exists():
-            raise HTTPException(status_code=404, detail="SCADA data not found")
+        # Try multiple possible paths for SCADA data
+        possible_paths = [
+            Path("data/uploads/la-haute-borne-data-2014-2015.csv"),
+            Path("backend/app/data/uploads/la-haute-borne-data-2014-2015.csv"),
+            Path("app/data/uploads/la-haute-borne-data-2014-2015.csv"),
+        ]
+        
+        scada_file = None
+        for path in possible_paths:
+            if path.exists():
+                scada_file = path
+                print(f"✅ Found SCADA data at: {path}")
+                break
+        
+        if not scada_file:
+            print(f"❌ SCADA data not found in any of these locations: {[str(p) for p in possible_paths]}")
+            raise HTTPException(status_code=404, detail="SCADA data not found. Please upload SCADA data file.")
         
         # Load SCADA data
         df = pd.read_csv(scada_file)
@@ -247,6 +261,7 @@ async def get_turbine_telemetry(
         turbine_data = df[df["Wind_turbine_name"] == turbine_id].copy()
         
         if turbine_data.empty:
+            print(f"❌ No SCADA data for turbine {turbine_id}. Available turbines: {df['Wind_turbine_name'].unique().tolist()}")
             raise HTTPException(status_code=404, detail=f"No SCADA data for turbine {turbine_id}")
         
         # Get last N hours of data (or last N records if hours not available)
@@ -255,17 +270,29 @@ async def get_turbine_telemetry(
         num_points = min(hours * points_per_hour, len(turbine_data))
         turbine_data = turbine_data.tail(num_points)
         
-        # Format for chart display
+        print(f"✅ Returning {num_points} telemetry points for {turbine_id}")
+        
+        # Format for chart display with additional sensor fields for subsystem health
         telemetry = []
         for _, row in turbine_data.iterrows():
             # Extract hour from timestamp for x-axis
             time_str = pd.to_datetime(row["Date_time"]).strftime("%H:%M")
+            
+            # Calculate yaw error (difference between wind direction and nacelle position)
+            wind_direction = float(row["Wa_avg"])  # Absolute wind direction
+            nacelle_angle = float(row["Ya_avg"])    # Nacelle yaw angle
+            yaw_error = abs((wind_direction - nacelle_angle + 180) % 360 - 180)  # Shortest angular distance
+            
             telemetry.append({
                 "time": time_str,
                 "power": float(round(row["P_avg"], 1)),  # kW
                 "windSpeed": float(round(row["Ws_avg"], 1)),  # m/s
-                "temperature": float(round(row["Ot_avg"], 1)),  # °C
-                "windDirection": float(round(row["Va_avg"], 1))  # degrees
+                "temperature": float(round(row["Ot_avg"], 1)),  # °C (outdoor temp)
+                "windDirection": float(round(row["Wa_avg"], 1)),  # degrees (absolute)
+                "pitchAngle": float(round(row["Ba_avg"], 1)),  # degrees (blade pitch)
+                "yawAngle": float(round(row["Ya_avg"], 1)),  # degrees (nacelle position)
+                "vanePosition": float(round(row["Va_avg"], 1)),  # degrees (relative wind)
+                "yawError": float(round(yaw_error, 1))  # degrees (calculated yaw misalignment)
             })
         
         return {

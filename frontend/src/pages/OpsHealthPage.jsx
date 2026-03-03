@@ -100,6 +100,8 @@ export default function OpsHealthPage() {
           const currentWindSpeed = parseFloat(latestTelemetry?.windSpeed) || 0
           const currentTemp = parseFloat(latestTelemetry?.temperature) || 0
           const windDirection = parseFloat(latestTelemetry?.windDirection) || 0
+          const pitchAngle = parseFloat(latestTelemetry?.pitchAngle) || 0
+          const yawError = parseFloat(latestTelemetry?.yawError) || 0
           
           // Calculate rotor RPM based on wind speed (realistic formula: RPM increases with wind)
           // Typical turbine: 6-18 RPM range, faster at higher wind speeds
@@ -107,46 +109,65 @@ export default function OpsHealthPage() {
             ? (Math.min(18, 6 + (currentWindSpeed - 3) * 0.6)).toFixed(1)
             : '0.0'
           
-          // Calculate pitch angle based on power and wind relationship
-          // Pitch increases at high wind to limit power (feathering)
-          const ratedPower = 2050 // kW
-          const pitchAngle = currentWindSpeed > 12 
-            ? (Math.min(25, (currentWindSpeed - 12) * 2)).toFixed(1)  // Feathering at high wind
-            : (Math.max(0, ((ratedPower - currentPower) / ratedPower) * 8)).toFixed(1)  // Optimal angle
+          // Dynamic subsystems based on actual SCADA sensor readings
           
-          // Dynamic subsystems based on turbine-specific data
-          const tempStatus = currentTemp > 15 ? 'WARNING' : 'NORMAL'
-          const tempDetail = currentTemp > 15 ? `High Temp: ${currentTemp.toFixed(1)}°C` : ''
+          // 1. Generator Health - based on temperature
+          const generatorStatus = currentTemp > 15 ? 'WARNING' : 'NORMAL'
+          const generatorDetail = currentTemp > 15 ? `High Temp: ${currentTemp.toFixed(1)}°C` : ''
           
-          const powerStatus = currentWindSpeed > 5 && currentPower < 300 ? 'WARNING' : 'NORMAL'
+          // 2. Pitch System Health - based on pitch angle vs wind speed relationship
+          // Expected pitch: low at low wind, increases at high wind (>12 m/s) for power limiting
+          const expectedPitch = currentWindSpeed > 12 ? (currentWindSpeed - 12) * 2 : 0
+          const pitchDeviation = Math.abs(pitchAngle - expectedPitch)
+          const pitchStatus = pitchDeviation > 15 ? 'WARNING' : 'NORMAL'
+          const pitchDetail = pitchDeviation > 15 ? `Pitch Deviation: ${pitchDeviation.toFixed(1)}°` : ''
+          
+          // 3. Yaw System Health - based on yaw error (misalignment with wind)
+          const yawStatus = yawError > 20 ? 'WARNING' : 'NORMAL'
+          const yawDetail = yawError > 20 ? `Yaw Error: ${yawError.toFixed(1)}°` : ''
+          
+          // 4. Gearbox Health - proxy using power output efficiency
+          // If wind is good but power is low, might indicate gearbox issues
+          const expectedPower = currentWindSpeed > 4 ? Math.min(2050, Math.pow(currentWindSpeed, 3) * 10) : 0
+          const powerEfficiency = expectedPower > 0 ? (currentPower / expectedPower) * 100 : 100
+          const gearboxStatus = (currentWindSpeed > 5 && powerEfficiency < 60) ? 'WARNING' : 'NORMAL'
+          const gearboxDetail = (currentWindSpeed > 5 && powerEfficiency < 60) ? `Low Efficiency: ${powerEfficiency.toFixed(0)}%` : ''
+          
+          // 5. Main Bearing Health - proxy using combination of factors
+          // Check for anomalies: high wind, low power, normal pitch = possible bearing issues
+          const bearingStatus = (currentWindSpeed > 8 && currentPower < 500 && pitchAngle < 5) ? 'WARNING' : 'NORMAL'
+          const bearingDetail = (currentWindSpeed > 8 && currentPower < 500 && pitchAngle < 5) ? 'Low Power Output' : ''
           
           const dynamicSubsystems = [
             { 
               name: 'Gearbox', 
-              status: 'NORMAL', 
-              icon: 'settings_input_component' 
+              status: gearboxStatus, 
+              icon: 'settings_input_component',
+              detail: gearboxDetail
             },
             { 
               name: 'Generator', 
-              status: tempStatus, 
+              status: generatorStatus, 
               icon: 'electric_bolt', 
-              detail: tempDetail
+              detail: generatorDetail
             },
             { 
               name: 'Pitch System', 
-              status: powerStatus, 
+              status: pitchStatus, 
               icon: 'swap_calls',
-              detail: powerStatus === 'WARNING' ? 'Low Power Output' : ''
+              detail: pitchDetail
             },
             { 
               name: 'Yaw System', 
-              status: 'NORMAL', 
-              icon: 'rotate_right' 
+              status: yawStatus, 
+              icon: 'rotate_right',
+              detail: yawDetail
             },
             { 
               name: 'Main Bearing', 
-              status: 'NORMAL', 
-              icon: 'circle' 
+              status: bearingStatus, 
+              icon: 'circle',
+              detail: bearingDetail
             },
           ]
           
@@ -165,12 +186,12 @@ export default function OpsHealthPage() {
               power_output: (currentPower / 1000).toFixed(2),  // Convert kW to MW
               wind_speed: currentWindSpeed.toFixed(1),
               rotor_rpm: calculatedRPM,  // DYNAMIC based on wind speed
-              pitch_angle: pitchAngle,  // DYNAMIC based on power/wind
+              pitch_angle: pitchAngle.toFixed(1),  // DYNAMIC from SCADA data
               generator_temp: currentTemp.toFixed(1),
             },
-            subsystems: dynamicSubsystems  // DYNAMIC based on actual readings
+            subsystems: dynamicSubsystems  // FULLY DYNAMIC based on actual SCADA sensor readings
           })
-          console.log(`✅ Turbine ${turbineId} data loaded: Power=${currentPower.toFixed(0)}kW, Wind=${currentWindSpeed.toFixed(1)}m/s, RPM=${calculatedRPM}, Pitch=${pitchAngle}°, Temp=${currentTemp.toFixed(1)}°C`)
+          console.log(`✅ Turbine ${turbineId} data loaded: Power=${currentPower.toFixed(0)}kW, Wind=${currentWindSpeed.toFixed(1)}m/s, RPM=${calculatedRPM}, Pitch=${pitchAngle.toFixed(1)}°, Temp=${currentTemp.toFixed(1)}°C, YawError=${yawError.toFixed(1)}°`)
         } catch (apiError) {
           console.error(`❌ Error fetching turbine ${turbineId} data:`, apiError.message)
           console.error('Full error:', apiError)
