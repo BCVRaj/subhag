@@ -224,33 +224,46 @@ def calculate_binned_power_curve(turbine_id: str = None):
             # Calculate Coefficient of Variation
             cov = (std_dev / mean_power * 100) if mean_power > 0 else 0
             
+            # Helper function to clean NaN values
+            def clean_float(val, default=0.0):
+                if pd.isna(val) or np.isnan(val) or np.isinf(val):
+                    return default
+                return round(float(val), 2)
+            
             binned_data.append({
-                "wind_speed": float(wind_speed),
-                "mean_power": round(mean_power, 2),
-                "std_dev": round(std_dev, 2),
-                "ci_lower": round(confidence_interval[0], 2),
-                "ci_upper": round(confidence_interval[1], 2),
-                "cov": round(cov, 2),
+                "wind_speed": clean_float(wind_speed),
+                "mean_power": clean_float(mean_power),
+                "std_dev": clean_float(std_dev),
+                "ci_lower": clean_float(confidence_interval[0]),
+                "ci_upper": clean_float(confidence_interval[1]),
+                "cov": clean_float(cov),
                 "samples": int(n_samples),
-                "min_power": round(np.min(powers), 2),
-                "max_power": round(np.max(powers), 2)
+                "min_power": clean_float(np.min(powers)),
+                "max_power": clean_float(np.max(powers))
             })
         
         # Sample raw points for scatter plot (max 500 points to avoid overload)
         sample_size = min(500, len(df))
         sampled = df.sample(n=sample_size) if len(df) > sample_size else df
+        
+        # Clean function for raw data
+        def clean_value(val):
+            if pd.isna(val) or np.isnan(val) or np.isinf(val):
+                return 0.0
+            return round(float(val), 2)
+        
         raw_points = [
-            {"wind_speed": float(row["Ws_avg"]), "power": float(row["P_avg"])}
+            {"wind_speed": clean_value(row["Ws_avg"]), "power": clean_value(row["P_avg"])}
             for _, row in sampled.iterrows()
         ]
         
-        # Calculate overall statistics
+        # Calculate overall statistics (with NaN protection)
         statistics = {
             "total_samples": int(len(df)),
-            "peak_power": round(df["P_avg"].max(), 2),
-            "avg_bin_power": round(np.mean([b["mean_power"] for b in binned_data]), 2) if binned_data else 0,
-            "wind_range_min": round(df["Ws_avg"].min(), 2),
-            "wind_range_max": round(df["Ws_avg"].max(), 2),
+            "peak_power": clean_value(df["P_avg"].max()) if not df.empty else 0,
+            "avg_bin_power": clean_value(np.mean([b["mean_power"] for b in binned_data])) if binned_data else 0,
+            "wind_range_min": clean_value(df["Ws_avg"].min()) if not df.empty else 0,
+            "wind_range_max": clean_value(df["Ws_avg"].max()) if not df.empty else 0,
             "cut_in_speed": 2.25,
             "rated_speed": 12.25,
             "total_bins": len(binned_data)
