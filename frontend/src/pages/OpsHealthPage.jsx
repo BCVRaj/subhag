@@ -3,7 +3,7 @@
  */
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Area, Bar, Scatter, ReferenceLine } from 'recharts'
 import Sidebar from '../components/common/Sidebar'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import { resultsAPI, turbinesAPI, maintenanceAPI } from '../services/api'
@@ -34,6 +34,13 @@ export default function OpsHealthPage() {
     direction: false,
     pitch: false,
     yawError: false
+  })
+  
+  // State for power curve chart toggles
+  const [powerCurveToggles, setPowerCurveToggles] = useState({
+    stdBand: true,
+    scatterDots: false,
+    sampleCounts: true
   })
   
   const { liveData, loading: liveLoading } = useSCADAData()
@@ -364,7 +371,10 @@ export default function OpsHealthPage() {
           warrantedCurve: data.warranted_curve || [],
           performanceGap: data.performance_gap_percent || -4.2,
           windSpeedDist: windSpeedDist,
-          turbulenceIntensity: data.turbulence_intensity || 12.1
+          turbulenceIntensity: data.turbulence_intensity || 12.1,
+          binnedCurve: data.binned_curve || [],
+          rawDataPoints: data.raw_data_points || [],
+          statistics: data.statistics || null
         })
         console.log('✅ Power curve data set - windSpeedDist:', Object.keys(windSpeedDist).length, 'bins')
       } else {
@@ -374,7 +384,10 @@ export default function OpsHealthPage() {
           warrantedCurve: [],
           performanceGap: -4.2,
           windSpeedDist: { 0: 5, 2.5: 15, 5: 25, 7.5: 35, 10: 30, 12.5: 20, 15: 12, 17.5: 8, 20: 5, 22.5: 3 },
-          turbulenceIntensity: 12.1
+          turbulenceIntensity: 12.1,
+          binnedCurve: [],
+          rawDataPoints: [],
+          statistics: null
         })
       }
     } catch (error) {
@@ -385,7 +398,10 @@ export default function OpsHealthPage() {
         warrantedCurve: [],
         performanceGap: -4.2,
         windSpeedDist: { 0: 5, 2.5: 15, 5: 25, 7.5: 35, 10: 30, 12.5: 20, 15: 12, 17.5: 8, 20: 5, 22.5: 3 },
-        turbulenceIntensity: 12.1
+        turbulenceIntensity: 12.1,
+        binnedCurve: [],
+        rawDataPoints: [],
+        statistics: null
       })
     }
   }
@@ -805,154 +821,208 @@ export default function OpsHealthPage() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 {/* Power Curve Chart (2/3 width) */}
                 <div className="lg:col-span-2 bg-surface-dark border border-border-dark rounded-lg p-5">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="material-symbols-outlined text-primary text-base">show_chart</span>
-                    <h3 className="text-base font-bold text-white">Observed vs. Warranted Power Curve</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-primary text-base">show_chart</span>
+                      <h3 className="text-base font-bold text-white">Binned Power Curve Analysis</h3>
+                    </div>
+                    
+                    {/* Toggle Buttons */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setPowerCurveToggles({ ...powerCurveToggles, stdBand: !powerCurveToggles.stdBand })}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                          powerCurveToggles.stdBand
+                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                            : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-slate-600'
+                        }`}
+                      >
+                        ± Std Band
+                      </button>
+                      <button
+                        onClick={() => setPowerCurveToggles({ ...powerCurveToggles, scatterDots: !powerCurveToggles.scatterDots })}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                          powerCurveToggles.scatterDots
+                            ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
+                            : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-slate-600'
+                        }`}
+                      >
+                        Scatter Dots
+                      </button>
+                      <button
+                        onClick={() => setPowerCurveToggles({ ...powerCurveToggles, sampleCounts: !powerCurveToggles.sampleCounts })}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                          powerCurveToggles.sampleCounts
+                            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                            : 'bg-slate-800 text-slate-500 border border-slate-700 hover:border-slate-600'
+                        }`}
+                      >
+                        Sample Counts
+                      </button>
+                    </div>
                   </div>
                   
-                  {/* Legend */}
-                  <div className="flex items-center gap-4 mb-4 text-xs font-medium">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-0.5 bg-slate-400"></span>
-                      <span className="text-slate-400">Warranted</span>
+                  {/* Statistics Cards */}
+                  {powerCurveData.statistics && (
+                    <div className="grid grid-cols-4 gap-3 mb-4">
+                      <div className="bg-slate-900/50 border border-blue-500/30 rounded-lg p-3">
+                        <p className="text-[10px] text-slate-400 font-semibold mb-1">PEAK POWER</p>
+                        <p className="text-lg font-bold text-blue-400">{powerCurveData.statistics.peak_power?.toFixed(0) || 0} kW</p>
+                      </div>
+                      <div className="bg-slate-900/50 border border-purple-500/30 rounded-lg p-3">
+                        <p className="text-[10px] text-slate-400 font-semibold mb-1">AVG BIN POWER</p>
+                        <p className="text-lg font-bold text-purple-400">{powerCurveData.statistics.avg_bin_power?.toFixed(0) || 0} kW</p>
+                      </div>
+                      <div className="bg-slate-900/50 border border-green-500/30 rounded-lg p-3">
+                        <p className="text-[10px] text-slate-400 font-semibold mb-1">TOTAL SAMPLES</p>
+                        <p className="text-lg font-bold text-green-400">{powerCurveData.statistics.total_samples || 0}</p>
+                      </div>
+                      <div className="bg-slate-900/50 border border-cyan-500/30 rounded-lg p-3">
+                        <p className="text-[10px] text-slate-400 font-semibold mb-1">WIND RANGE</p>
+                        <p className="text-lg font-bold text-cyan-400">
+                          {powerCurveData.statistics.wind_range_min?.toFixed(1) || 0}-{powerCurveData.statistics.wind_range_max?.toFixed(1) || 0} m/s
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-0.5 bg-primary"></span>
-                      <span className="text-primary">Normal</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-0.5 bg-accent-amber"></span>
-                      <span className="text-accent-amber">Underperformance</span>
-                    </div>
-                  </div>
+                  )}
                   
                   {/* Power Curve Visualization */}
-                  <div className="relative h-56 bg-slate-900/30 rounded-lg p-4">
-                    {(() => {
-                      // Calculate max power for scaling from actual data
-                      const maxPower = powerCurveData.warrantedCurve && powerCurveData.warrantedCurve.length > 0
-                        ? Math.max(...powerCurveData.warrantedCurve.map(p => p.power), ...powerCurveData.observedCurve.map(p => p.power))
-                        : 2400;
-                      
-                      const maxWindSpeed = 25;
-                      
-                      // Generate Y-axis labels dynamically
-                      const yAxisLabels = [
-                        Math.round(maxPower),
-                        Math.round(maxPower * 0.625),
-                        Math.round(maxPower * 0.417),
-                        Math.round(maxPower * 0.208),
-                        0
-                      ];
-                      
-                      // Function to generate SVG path from curve data
-                      const generatePath = (curveData) => {
-                        if (!curveData || curveData.length === 0) return "";
-                        
-                        return curveData.map((point, i) => {
-                          const x = (point.wind_speed / maxWindSpeed) * 100;
-                          const y = 100 - (point.power / maxPower) * 100;
-                          return i === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
-                        }).join(' ');
-                      };
-                      
-                      // Identify underperformance points (where observed < warranted significantly)
-                      const underperformancePoints = powerCurveData.observedCurve && powerCurveData.warrantedCurve
-                        ? powerCurveData.observedCurve
-                            .map((obs, i) => {
-                              const warrant = powerCurveData.warrantedCurve[i];
-                              if (warrant && obs.power > 0 && warrant.power > 0) {
-                                const gap = ((warrant.power - obs.power) / warrant.power) * 100;
-                                if (gap > 5 && obs.wind_speed > 3 && obs.wind_speed < 20) {
-                                  return {
-                                    x: (obs.wind_speed / maxWindSpeed) * 100,
-                                    y: 100 - (obs.power / maxPower) * 100
-                                  };
-                                }
+                  <div className="h-72 bg-slate-900/30 rounded-lg p-4">
+                    {powerCurveData.binnedCurve && powerCurveData.binnedCurve.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <ComposedChart
+                          data={powerCurveData.binnedCurve}
+                          margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
+                        >
+                          <defs>
+                            <linearGradient id="confidenceBand" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                            </linearGradient>
+                          </defs>
+                          
+                          <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                          
+                          <XAxis 
+                            dataKey="wind_speed" 
+                            stroke="#64748b"
+                            label={{ value: 'Wind Speed (m/s)', position: 'insideBottom', offset: -10, fill: '#94a3b8', fontSize: 12, fontWeight: 600 }}
+                            tick={{ fill: '#64748b', fontSize: 11 }}
+                            domain={[0, 25]}
+                          />
+                          
+                          <YAxis 
+                            stroke="#64748b"
+                            label={{ value: 'Power (kW)', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: 12, fontWeight: 600 }}
+                            tick={{ fill: '#64748b', fontSize: 11 }}
+                          />
+                          
+                          <Tooltip 
+                            content={({ active, payload }) => {
+                              if (active && payload && payload.length > 0) {
+                                const data = payload[0].payload
+                                return (
+                                  <div className="bg-slate-800 border border-slate-600 rounded-lg p-3 shadow-xl">
+                                    <p className="text-white font-bold text-sm mb-2">Wind Speed: {data.wind_speed?.toFixed(2)} m/s</p>
+                                    <div className="space-y-1 text-xs">
+                                      <p className="text-slate-300"><span className="text-slate-500 font-semibold">n =</span> {data.samples} samples</p>
+                                      <p className="text-blue-400"><span className="text-slate-500 font-semibold">Mean:</span> {data.mean_power?.toFixed(2)} kW</p>
+                                      <p className="text-purple-400"><span className="text-slate-500 font-semibold">Std Dev:</span> ± {data.std_dev?.toFixed(2)} kW</p>
+                                      <p className="text-green-400"><span className="text-slate-500 font-semibold">95% CI:</span> {data.ci_lower?.toFixed(2)} - {data.ci_upper?.toFixed(2)} kW</p>
+                                      <p className="text-amber-400"><span className="text-slate-500 font-semibold">CoV:</span> {data.cov?.toFixed(1)}%</p>
+                                    </div>
+                                  </div>
+                                )
                               }
-                              return null;
-                            })
-                            .filter(p => p !== null)
-                        : [];
-                      
-                      return (
-                        <>
-                          {/* Y-axis labels */}
-                          <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-[10px] text-slate-600 font-bold py-6">
-                            {yAxisLabels.map((label, i) => (
-                              <span key={i}>{label}</span>
-                            ))}
-                          </div>
+                              return null
+                            }}
+                          />
                           
-                          {/* Chart area */}
-                          <div className="ml-6 h-full relative">
-                            {/* Grid lines */}
-                            <div className="absolute inset-0 flex flex-col justify-between">
-                              {Array.from({ length: 5 }).map((_, i) => (
-                                <div key={i} className="w-full border-t border-slate-800"></div>
-                              ))}
-                            </div>
-                            
-                            {/* Warranted curve (gray line) */}
-                            {powerCurveData.warrantedCurve && powerCurveData.warrantedCurve.length > 0 && (
-                              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                <path 
-                                  d={generatePath(powerCurveData.warrantedCurve)}
-                                  stroke="#64748b" 
-                                  strokeWidth="0.5" 
-                                  fill="none"
-                                  vectorEffect="non-scaling-stroke"
-                                />
-                              </svg>
-                            )}
-                            
-                            {/* Observed curve (green line) */}
-                            {powerCurveData.observedCurve && powerCurveData.observedCurve.length > 0 && (
-                              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                <path 
-                                  d={generatePath(powerCurveData.observedCurve)}
-                                  stroke="#10b77f" 
-                                  strokeWidth="0.5" 
-                                  fill="none"
-                                  vectorEffect="non-scaling-stroke"
-                                />
-                              </svg>
-                            )}
-                            
-                            {/* Underperformance points (amber) */}
-                            {underperformancePoints.length > 0 && (
-                              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                                {underperformancePoints.map((point, i) => (
-                                  <circle 
-                                    key={i}
-                                    cx={point.x} 
-                                    cy={point.y} 
-                                    r="0.8" 
-                                    fill="#F59E0B"
-                                    vectorEffect="non-scaling-stroke"
-                                  />
-                                ))}
-                              </svg>
-                            )}
-                          </div>
+                          {/* Reference Lines */}
+                          {powerCurveData.statistics && (
+                            <>
+                              <ReferenceLine 
+                                x={powerCurveData.statistics.cut_in_speed} 
+                                stroke="#10b981" 
+                                strokeDasharray="5 5"
+                                label={{ value: 'Cut-in', position: 'top', fill: '#10b981', fontSize: 10, fontWeight: 600 }}
+                              />
+                              <ReferenceLine 
+                                x={powerCurveData.statistics.rated_speed} 
+                                stroke="#ef4444" 
+                                strokeDasharray="5 5"
+                                label={{ value: 'Rated', position: 'top', fill: '#ef4444', fontSize: 10, fontWeight: 600 }}
+                              />
+                            </>
+                          )}
                           
-                          {/* X-axis labels */}
-                          <div className="absolute bottom-0 left-6 right-0 flex justify-between text-[10px] text-slate-600 font-bold">
-                            <span>0</span>
-                            <span>5</span>
-                            <span>10</span>
-                            <span>15</span>
-                            <span>20</span>
-                            <span>25</span>
-                          </div>
-                        </>
-                      );
-                    })()}
-                  </div>
-                  
-                  <div className="flex justify-between items-center mt-4">
-                    <p className="text-[10px] text-slate-500 font-semibold -rotate-90 w-4">Power Output (kW)</p>
-                    <p className="text-[10px] text-slate-500 text-center font-semibold flex-1">Wind Speed (m/s)</p>
+                          {/* Histogram Bars (if enabled) */}
+                          {powerCurveToggles.sampleCounts && (
+                            <Bar 
+                              dataKey="samples" 
+                              fill="#10b981" 
+                              fillOpacity={0.2}
+                              yAxisId="right"
+                            />
+                          )}
+                          
+                          {/* Confidence Band Area (if enabled) */}
+                          {powerCurveToggles.stdBand && (
+                            <>
+                              <Area
+                                type="monotone"
+                                dataKey="ci_upper"
+                                stroke="none"
+                                fill="url(#confidenceBand)"
+                                fillOpacity={0.4}
+                              />
+                              <Area
+                                type="monotone"
+                                dataKey="ci_lower"
+                                stroke="none"
+                                fill="#0f172a"
+                                fillOpacity={0.8}
+                              />
+                            </>
+                          )}
+                          
+                          {/* Mean Power Line */}
+                          <Line 
+                            type="monotone" 
+                            dataKey="mean_power" 
+                            stroke="#3b82f6" 
+                            strokeWidth={3}
+                            dot={{ fill: '#3b82f6', r: 4 }}
+                            activeDot={{ r: 6 }}
+                          />
+                          
+                          {/* Scatter Dots for Raw Data (if enabled) */}
+                          {powerCurveToggles.scatterDots && powerCurveData.rawDataPoints && powerCurveData.rawDataPoints.length > 0 && (
+                            <Scatter 
+                              data={powerCurveData.rawDataPoints}
+                              fill="#06b6d4" 
+                              fillOpacity={0.3}
+                              shape="circle"
+                            />
+                          )}
+                          
+                          {/* Second Y-axis for histogram */}
+                          {powerCurveToggles.sampleCounts && (
+                            <YAxis 
+                              yAxisId="right"
+                              orientation="right"
+                              stroke="#10b981"
+                              tick={{ fill: '#10b981', fontSize: 10 }}
+                              label={{ value: 'Samples', angle: 90, position: 'insideRight', fill: '#10b981', fontSize: 11, fontWeight: 600 }}
+                            />
+                          )}
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-slate-500 text-sm">No binned power curve data available</p>
+                      </div>
+                    )}
                   </div>
                 </div>
                 

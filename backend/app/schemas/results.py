@@ -27,6 +27,9 @@ class PowerCurveResults(BaseModel):
     power_output_bins: List[float]
     turbulence_intensity: Optional[float] = None
     wind_distribution: Optional[List[Dict[str, float]]] = None
+    binned_curve: Optional[List[Dict[str, Any]]] = None  # Binned power curve with statistics
+    raw_data_points: Optional[List[Dict[str, float]]] = None  # Individual scatter points
+    statistics: Optional[Dict[str, Any]] = None  # Overall statistics
 
 
 class TurbinePerformance(BaseModel):

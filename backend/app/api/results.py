@@ -145,6 +145,144 @@ async def get_energy_yield_results(job_id: str, turbine_id: str = None):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+def calculate_binned_power_curve(turbine_id: str = None):
+    """Calculate binned power curve with statistics from SCADA data"""
+    from pathlib import Path
+    import pandas as pd
+    import numpy as np
+    from scipy import stats
+    
+    try:
+        # Try multiple paths for SCADA data
+        possible_paths = [
+            Path("data/uploads/la-haute-borne-data-2014-2015.csv"),
+            Path("backend/app/data/uploads/la-haute-borne-data-2014-2015.csv"),
+            Path("app/data/uploads/la-haute-borne-data-2014-2015.csv"),
+        ]
+        
+        scada_file = None
+        for path in possible_paths:
+            if path.exists():
+                scada_file = path
+                break
+        
+        if not scada_file:
+            print(f"⚠️ SCADA data not found, returning empty binned curve")
+            return {
+                "binned_curve": [],
+                "raw_points": [],
+                "statistics": {
+                    "total_samples": 0,
+                    "peak_power": 0,
+                    "avg_bin_power": 0,
+                    "wind_range_min": 0,
+                    "wind_range_max": 0,
+                    "cut_in_speed": 2.25,
+                    "rated_speed": 12.25
+                }
+            }
+        
+        # Load SCADA data
+        df = pd.read_csv(scada_file)
+        
+        # Filter by turbine if specified
+        if turbine_id:
+            df = df[df["Wind_turbine_name"] == turbine_id]
+        
+        # Filter valid data (remove shutdown conditions)
+        df = df[(df["Ws_avg"] >= 0) & (df["P_avg"] >= 0)]
+        df = df[(df["Ws_avg"] <= 25) & (df["P_avg"] <= 2500)]  # Reasonable limits
+        
+        # Create wind speed bins (0.5 m/s bins)
+        bin_width = 0.5
+        bins = np.arange(0, 25 + bin_width, bin_width)
+        df["wind_bin"] = pd.cut(df["Ws_avg"], bins=bins, labels=bins[:-1] + bin_width / 2)
+        
+        # Calculate statistics for each bin
+        binned_data = []
+        raw_points = []
+        
+        for wind_speed, group in df.groupby("wind_bin", observed=True):
+            if len(group) < 3:  # Skip bins with too few samples
+                continue
+            
+            powers = group["P_avg"].values
+            mean_power = np.mean(powers)
+            std_dev = np.std(powers, ddof=1)
+            n_samples = len(powers)
+            
+            # Calculate 95% confidence interval
+            confidence_level = 0.95
+            degrees_freedom = n_samples - 1
+            confidence_interval = stats.t.interval(
+                confidence_level,
+                degrees_freedom,
+                loc=mean_power,
+                scale=stats.sem(powers)
+            )
+            
+            # Calculate Coefficient of Variation
+            cov = (std_dev / mean_power * 100) if mean_power > 0 else 0
+            
+            binned_data.append({
+                "wind_speed": float(wind_speed),
+                "mean_power": round(mean_power, 2),
+                "std_dev": round(std_dev, 2),
+                "ci_lower": round(confidence_interval[0], 2),
+                "ci_upper": round(confidence_interval[1], 2),
+                "cov": round(cov, 2),
+                "samples": int(n_samples),
+                "min_power": round(np.min(powers), 2),
+                "max_power": round(np.max(powers), 2)
+            })
+        
+        # Sample raw points for scatter plot (max 500 points to avoid overload)
+        sample_size = min(500, len(df))
+        sampled = df.sample(n=sample_size) if len(df) > sample_size else df
+        raw_points = [
+            {"wind_speed": float(row["Ws_avg"]), "power": float(row["P_avg"])}
+            for _, row in sampled.iterrows()
+        ]
+        
+        # Calculate overall statistics
+        statistics = {
+            "total_samples": int(len(df)),
+            "peak_power": round(df["P_avg"].max(), 2),
+            "avg_bin_power": round(np.mean([b["mean_power"] for b in binned_data]), 2) if binned_data else 0,
+            "wind_range_min": round(df["Ws_avg"].min(), 2),
+            "wind_range_max": round(df["Ws_avg"].max(), 2),
+            "cut_in_speed": 2.25,
+            "rated_speed": 12.25,
+            "total_bins": len(binned_data)
+        }
+        
+        print(f"✅ Calculated binned power curve: {len(binned_data)} bins, {len(df)} total samples")
+        
+        return {
+            "binned_curve": binned_data,
+            "raw_points": raw_points,
+            "statistics": statistics
+        }
+        
+    except Exception as e:
+        print(f"❌ Error calculating binned power curve: {e}")
+        import traceback
+        traceback.print_exc()
+        return {
+            "binned_curve": [],
+            "raw_points": [],
+            "statistics": {
+                "total_samples": 0,
+                "peak_power": 0,
+                "avg_bin_power": 0,
+                "wind_range_min": 0,
+                "wind_range_max": 0,
+                "cut_in_speed": 2.25,
+                "rated_speed": 12.25
+            }
+        }
+
+
 @router.get("/{job_id}/power-curve", response_model=PowerCurveResults)
 async def get_power_curve_results(job_id: str, turbine_id: str = None):
     """Get power curve specific results - optionally filtered by turbine_id
@@ -166,6 +304,9 @@ async def get_power_curve_results(job_id: str, turbine_id: str = None):
         analysis_turbine_id = turbine_id_map.get(turbine_id, turbine_id) if turbine_id else None
         if turbine_id and analysis_turbine_id != turbine_id:
             print(f"🔄 Mapped {turbine_id} → {analysis_turbine_id}")
+        
+        # Calculate binned power curve from SCADA data
+        binned_curve_data = calculate_binned_power_curve(turbine_id)
         
         results = JobService.get_job_results(job_id)
         
@@ -236,7 +377,10 @@ async def get_power_curve_results(job_id: str, turbine_id: str = None):
                     wind_speed_bins=[p["wind_speed"] for p in adjusted_observed[:10]],
                     power_output_bins=[p["power"] for p in adjusted_observed[:10]],
                     turbulence_intensity=turbulence if turbulence else 12.0,
-                    wind_distribution=wind_distribution
+                    wind_distribution=wind_distribution,
+                    binned_curve=binned_curve_data.get("binned_curve", []),
+                    raw_data_points=binned_curve_data.get("raw_points", []),
+                    statistics=binned_curve_data.get("statistics", {})
                 )
         
         # Return plant-level data if no turbine_id or turbine not found
@@ -248,7 +392,10 @@ async def get_power_curve_results(job_id: str, turbine_id: str = None):
             wind_speed_bins=[p["wind_speed"] for p in observed[:10]] if observed else [],
             power_output_bins=[p["power"] for p in observed[:10]] if observed else [],
             turbulence_intensity=turbulence if turbulence else 12.0,
-            wind_distribution=wind_distribution
+            wind_distribution=wind_distribution,
+            binned_curve=binned_curve_data.get("binned_curve", []),
+            raw_data_points=binned_curve_data.get("raw_points", []),
+            statistics=binned_curve_data.get("statistics", {})
         )
     
     except HTTPException:
