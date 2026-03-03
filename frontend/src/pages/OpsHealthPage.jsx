@@ -334,62 +334,53 @@ export default function OpsHealthPage() {
   
   const fetchPowerCurveData = async () => {
     try {
-      if (jobId) {
-        // Fetch power curve data if jobId exists
-        console.log(`📈 Fetching power curve data for job: ${jobId}, turbine: ${turbineId || 'ALL (plant-level)'}`)
-        const response = await resultsAPI.getPowerCurve(jobId, turbineId)
-        const data = response.data
-        
-        console.log('📈 Power curve data received:', data)
-        console.log(`📈 Observed points: ${data.observed_curve?.length || 0}, Warranted points: ${data.warranted_curve?.length || 0}`)
-        console.log(`📈 Performance gap: ${data.performance_gap_percent}%, Turbulence: ${data.turbulence_intensity}%`)
-        
-        // Generate wind speed distribution from power curve data
-        let windSpeedDist = {}
-        if (data.wind_distribution && data.wind_distribution.length > 0) {
-          // Use backend's calculated distribution (from real SCADA data)
-          console.log('📊 Using real wind distribution from SCADA data')
-          data.wind_distribution.forEach(bin => {
-            windSpeedDist[bin.wind_speed] = bin.frequency_percent
-          })
-        } else if (data.observed_curve && data.observed_curve.length > 0) {
-          // Fallback: derive from observed curve bins
-          console.log('⚠️ Fallback: deriving distribution from power curve')
-          data.observed_curve.forEach(point => {
-            const bin = Math.floor(point.wind_speed / 2.5) * 2.5
-            windSpeedDist[bin] = (windSpeedDist[bin] || 0) + 1
-          })
-          console.log(`📊 Wind speed distribution generated:`, windSpeedDist)
-        } else {
-          // Final fallback: Create demo distribution if no data
-          console.log('⚠️ No data available, using demo distribution')
-          windSpeedDist = { 0: 5, 2.5: 15, 5: 25, 7.5: 35, 10: 30, 12.5: 20, 15: 12, 17.5: 8 }
-        }
-        
-        setPowerCurveData({
-          observedCurve: data.observed_curve || [],
-          warrantedCurve: data.warranted_curve || [],
-          performanceGap: data.performance_gap_percent || -4.2,
-          windSpeedDist: windSpeedDist,
-          turbulenceIntensity: data.turbulence_intensity || 12.1,
-          binnedCurve: data.binned_curve || [],
-          rawDataPoints: data.raw_data_points || [],
-          statistics: data.statistics || null
+      // Always fetch power curve data - use placeholder if no jobId
+      const effectiveJobId = jobId || 'latest'
+      console.log(`📈 Fetching power curve data for job: ${effectiveJobId}, turbine: ${turbineId || 'ALL (plant-level)'}`)
+      const response = await resultsAPI.getPowerCurve(effectiveJobId, turbineId)
+      const data = response.data
+      
+      console.log('📈 Power curve data received:', data)
+      console.log(`📈 Binned curve points: ${data.binned_curve?.length || 0}`)
+      console.log(`📈 Raw data points: ${data.raw_data_points?.length || 0}`)
+      console.log(`📈 Statistics:`, data.statistics)
+      
+      // Generate wind speed distribution from power curve data
+      let windSpeedDist = {}
+      if (data.wind_distribution && data.wind_distribution.length > 0) {
+        // Use backend's calculated distribution (from real SCADA data)
+        console.log('📊 Using real wind distribution from SCADA data')
+        data.wind_distribution.forEach(bin => {
+          windSpeedDist[bin.wind_speed] = bin.frequency_percent
         })
-        console.log('✅ Power curve data set - windSpeedDist:', Object.keys(windSpeedDist).length, 'bins')
+      } else if (data.observed_curve && data.observed_curve.length > 0) {
+        // Fallback: derive from observed curve bins
+        console.log('⚠️ Fallback: deriving distribution from power curve')
+        data.observed_curve.forEach(point => {
+          const bin = Math.floor(point.wind_speed / 2.5) * 2.5
+          windSpeedDist[bin] = (windSpeedDist[bin] || 0) + 1
+        })
+        console.log(`📊 Wind speed distribution generated:`, windSpeedDist)
       } else {
-        // No jobId - use demonstration data
-        setPowerCurveData({
-          observedCurve: [],
-          warrantedCurve: [],
-          performanceGap: -4.2,
-          windSpeedDist: { 0: 5, 2.5: 15, 5: 25, 7.5: 35, 10: 30, 12.5: 20, 15: 12, 17.5: 8, 20: 5, 22.5: 3 },
-          turbulenceIntensity: 12.1,
-          binnedCurve: [],
-          rawDataPoints: [],
-          statistics: null
-        })
+        // Final fallback: Create demo distribution if no data
+        console.log('⚠️ No data available, using demo distribution')
+        windSpeedDist = { 0: 5, 2.5: 15, 5: 25, 7.5: 35, 10: 30, 12.5: 20, 15: 12, 17.5: 8 }
       }
+      
+      setPowerCurveData({
+        observedCurve: data.observed_curve || [],
+        warrantedCurve: data.warranted_curve || [],
+        performanceGap: data.performance_gap_percent || -4.2,
+        windSpeedDist: windSpeedDist,
+        turbulenceIntensity: data.turbulence_intensity || 12.1,
+        binnedCurve: data.binned_curve || [],
+        rawDataPoints: data.raw_data_points || [],
+        statistics: data.statistics || null
+      })
+      console.log('✅ Power curve data set successfully')
+      console.log(`   - Binned curve: ${data.binned_curve?.length || 0} bins`)
+      console.log(`   - Raw points: ${data.raw_data_points?.length || 0} points`)
+      console.log(`   - Statistics:`, data.statistics ? 'present' : 'missing')
     } catch (error) {
       console.error('Failed to fetch power curve data:', error)
       // Fallback with demonstration data
