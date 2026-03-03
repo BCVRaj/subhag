@@ -21,6 +21,7 @@ export default function OpsHealthPage() {
   const [turbineData, setTurbineData] = useState(null)
   const [telemetryHistory, setTelemetryHistory] = useState([])
   const [overviewData, setOverviewData] = useState(null)
+  const [overviewDashboardData, setOverviewDashboardData] = useState(null)
   const [powerCurveData, setPowerCurveData] = useState(null)
   const [liveAssetStatus, setLiveAssetStatus] = useState([])
   const [turbineList, setTurbineList] = useState([])  // Real turbine list from backend
@@ -69,6 +70,7 @@ export default function OpsHealthPage() {
   useEffect(() => {
     fetchTurbineData()
     fetchOverviewData()
+    fetchOverviewDashboard()
     fetchPowerCurveData()
     fetchLiveAssetStatus()
     fetchServiceHistory()
@@ -329,6 +331,23 @@ export default function OpsHealthPage() {
         downtime: 3.2,
         actualEnergy: 86.5
       })
+    }
+  }
+  
+  const fetchOverviewDashboard = async () => {
+    try {
+      const effectiveJobId = jobId || 'latest'
+      console.log(`📊 Fetching overview dashboard for job: ${effectiveJobId}, turbine: ${turbineId || 'ALL (plant-level)'}`)
+      
+      const response = await resultsAPI.getOverviewDashboard(effectiveJobId, turbineId)
+      const dashboardData = response.data
+      
+      console.log('📊 Overview dashboard data received:', dashboardData)
+      setOverviewDashboardData(dashboardData)
+    } catch (error) {
+      console.error('Failed to fetch overview dashboard:', error)
+      // Set minimal fallback data
+      setOverviewDashboardData(null)
     }
   }
   
@@ -596,35 +615,251 @@ export default function OpsHealthPage() {
                 </div>
               </div>
               
-              {/* Top KPI Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Availability Card */}
+              {/* Summary Statistics - 10 Card Grid */}
+              {overviewDashboardData && (
                 <div className="bg-surface-dark border border-border-dark rounded-lg p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">AVAILABILITY</h3>
-                    <span className="material-symbols-outlined text-primary text-lg">check_circle</span>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="material-symbols-outlined text-primary text-lg">analytics</span>
+                    <h3 className="text-sm font-bold text-white">Summary Statistics</h3>
                   </div>
-                  <div className="flex items-baseline gap-2 mb-3">
-                    <span className="text-3xl font-black text-white">{overviewData.availability.toFixed(1)}%</span>
-                  </div>
-                  {turbineId && (
-                    <div className="text-[10px] text-slate-500 font-semibold">
-                      Turbine: {turbineId}
+                  
+                  <div className="grid grid-cols-5 gap-4">
+                    {/* Total Records */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-blue-400 text-2xl mb-2">database</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.total_records.toLocaleString()}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Total Records</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">SCADA data points</span>
                     </div>
-                  )}
+                    
+                    {/* Time Span */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-purple-400 text-2xl mb-2">schedule</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.time_span_days}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Time Span</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">Days of data</span>
+                    </div>
+                    
+                    {/* Mean Wind Speed */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-cyan-400 text-2xl mb-2">air</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.mean_wind_speed.toFixed(2)}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Mean Wind Speed</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">m/s</span>
+                    </div>
+                    
+                    {/* Max Wind Speed */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-cyan-400 text-2xl mb-2">storm</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.max_wind_speed.toFixed(2)}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Max Wind Speed</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">m/s</span>
+                    </div>
+                    
+                    {/* Mean Power */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-green-400 text-2xl mb-2">bolt</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.mean_power.toFixed(0)}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Mean Power</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">kW</span>
+                    </div>
+                    
+                    {/* Max Power */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-green-400 text-2xl mb-2">flash_on</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.max_power.toFixed(0)}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Max Power</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">kW</span>
+                    </div>
+                    
+                    {/* Capacity Factor */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-primary text-2xl mb-2">speed</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.capacity_factor.toFixed(1)}%</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Capacity Factor</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">Performance</span>
+                    </div>
+                    
+                    {/* Availability */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-primary text-2xl mb-2">check_circle</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.availability.toFixed(1)}%</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Availability</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">Uptime</span>
+                    </div>
+                    
+                    {/* Estimated AEP */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-accent-amber text-2xl mb-2">trending_up</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.estimated_aep_mwh.toFixed(0)}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Estimated AEP</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">MWh/year</span>
+                    </div>
+                    
+                    {/* Total Energy */}
+                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-accent-amber text-2xl mb-2">power</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.total_energy_mwh.toFixed(0)}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Total Energy</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">MWh</span>
+                    </div>
+                  </div>
                 </div>
-                
-                {/* Performance Index Card */}
+              )}
+              
+              {/* Energy Loss Breakdown */}
+              {overviewDashboardData && (
                 <div className="bg-surface-dark border border-border-dark rounded-lg p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">PERFORMANCE INDEX</h3>
-                    <span className="material-symbols-outlined text-accent-amber text-lg">speed</span>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-primary text-lg">insights</span>
+                      <h3 className="text-sm font-bold text-white">Energy Loss Breakdown</h3>
+                    </div>
+                    <div className="px-3 py-1 bg-primary/20 border border-primary rounded-full">
+                      <span className="text-xs font-bold text-primary">{overviewDashboardData.operational_efficiency.toFixed(1)}% Operational Efficiency</span>
+                    </div>
                   </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-black text-white">{overviewData.performanceIndex.toFixed(1)}%</span>
+                  
+                  <div className="grid grid-cols-4 gap-4 mb-4">
+                    {/* Downtime Loss */}
+                    <div className="bg-surface-darker border border-accent-amber/50 rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-accent-amber text-2xl mb-2">schedule</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.downtime_loss_mwh.toFixed(2)}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Downtime Loss</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">{overviewDashboardData.downtime_loss_kwh.toFixed(0)} kWh</span>
+                    </div>
+                    
+                    {/* Cut-out Loss */}
+                    <div className="bg-surface-darker border border-cyan-500/50 rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-cyan-400 text-2xl mb-2">wind_power</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.cutout_loss_mwh.toFixed(2)}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Cut-out Loss</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">High wind ≥25m/s</span>
+                    </div>
+                    
+                    {/* Missing Data */}
+                    <div className="bg-surface-darker border border-purple-500/50 rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-purple-400 text-2xl mb-2">data_alert</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.missing_data_percent.toFixed(2)}%</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Missing Data</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">Records with NaN</span>
+                    </div>
+                    
+                    {/* Total Loss */}
+                    <div className="bg-surface-darker border border-accent-red/50 rounded-lg p-4 flex flex-col items-center justify-center">
+                      <span className="material-symbols-outlined text-accent-red text-2xl mb-2">error</span>
+                      <span className="text-2xl font-black text-white">{overviewDashboardData.total_loss_mwh.toFixed(2)}</span>
+                      <span className="text-xs font-semibold text-slate-400 mt-1">Total Loss</span>
+                      <span className="text-[10px] text-slate-500 mt-0.5">Downtime + Cut-out</span>
+                    </div>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs font-semibold">
+                      <span className="text-slate-400">Operational Energy</span>
+                      <span className="text-white">{overviewDashboardData.operational_energy_mwh.toFixed(2)} MWh</span>
+                    </div>
+                    <div className="relative w-full h-4 bg-surface-darker rounded-full overflow-hidden">
+                      <div 
+                        className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary to-green-500 rounded-full transition-all duration-500"
+                        style={{ width: `${(overviewDashboardData.operational_energy_mwh / overviewDashboardData.theoretical_energy_mwh * 100)}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex items-center justify-between text-xs font-semibold">
+                      <span className="text-slate-500">Theoretical Energy</span>
+                      <span className="text-slate-400">{overviewDashboardData.theoretical_energy_mwh.toFixed(2)} MWh</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
+              
+              {/* Monthly Performance */}
+              {overviewDashboardData && overviewDashboardData.monthly_performance && overviewDashboardData.monthly_performance.length > 0 && (
+                <div className="bg-surface-dark border border-border-dark rounded-lg p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-primary text-lg">calendar_month</span>
+                      <h3 className="text-sm font-bold text-white">Monthly Performance</h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button className="px-3 py-1.5 bg-surface-darker border border-border-dark rounded-lg text-xs font-semibold text-slate-400 hover:bg-surface-darker/80 transition-colors">
+                        <span className="material-symbols-outlined text-[16px] align-middle mr-1">download</span>
+                        Export CSV
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Chart */}
+                  <div className="h-64 mb-4">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <ComposedChart data={overviewDashboardData.monthly_performance}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                        <XAxis 
+                          dataKey="month" 
+                          stroke="#64748b"
+                          style={{ fontSize: '11px' }}
+                        />
+                        <YAxis 
+                          yAxisId="left"
+                          stroke="#06b6d4"
+                          style={{ fontSize: '11px' }}
+                          label={{ value: 'Energy (MWh)', angle: -90, position: 'insideLeft', style: { fill: '#06b6d4', fontSize: '10px' } }}
+                        />
+                        <YAxis 
+                          yAxisId="right"
+                          orientation="right"
+                          stroke="#a855f7"
+                          style={{ fontSize: '11px' }}
+                          label={{ value: 'CF (%)', angle: 90, position: 'insideRight', style: { fill: '#a855f7', fontSize: '10px' } }}
+                        />
+                        <Tooltip 
+                          contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                          labelStyle={{ color: '#e2e8f0', fontWeight: 'bold' }}
+                        />
+                        <Legend 
+                          wrapperStyle={{ fontSize: '12px' }}
+                          iconType="circle"
+                        />
+                        <Bar yAxisId="left" dataKey="energy_mwh" fill="#06b6d4" name="Energy (MWh)" />
+                        <Line yAxisId="right" type="monotone" dataKey="capacity_factor" stroke="#a855f7" strokeWidth={2} name="Capacity Factor (%)" dot={{ r: 4 }} />
+                      </ComposedChart>
+                    </ResponsiveContainer>
+                  </div>
+                  
+                  {/* Monthly Statistics Table */}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="border-b border-border-dark">
+                          <th className="text-left py-2 px-3 text-slate-400 font-semibold">Month</th>
+                          <th className="text-right py-2 px-3 text-slate-400 font-semibold">Records</th>
+                          <th className="text-right py-2 px-3 text-slate-400 font-semibold">Mean WS</th>
+                          <th className="text-right py-2 px-3 text-slate-400 font-semibold">Mean Power</th>
+                          <th className="text-right py-2 px-3 text-slate-400 font-semibold">Max Power</th>
+                          <th className="text-right py-2 px-3 text-slate-400 font-semibold">Energy</th>
+                          <th className="text-right py-2 px-3 text-slate-400 font-semibold">CF</th>
+                          <th className="text-right py-2 px-3 text-slate-400 font-semibold">Avail</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {overviewDashboardData.monthly_performance.map((month, idx) => (
+                          <tr key={idx} className="border-b border-border-dark/50 hover:bg-surface-darker/50 transition-colors">
+                            <td className="py-2 px-3 text-white font-semibold">{month.month}</td>
+                            <td className="py-2 px-3 text-slate-300 text-right">{month.records.toLocaleString()}</td>
+                            <td className="py-2 px-3 text-slate-300 text-right">{month.mean_ws.toFixed(2)} m/s</td>
+                            <td className="py-2 px-3 text-slate-300 text-right">{month.mean_power.toFixed(0)} kW</td>
+                            <td className="py-2 px-3 text-slate-300 text-right">{month.max_power.toFixed(0)} kW</td>
+                            <td className="py-2 px-3 text-slate-300 text-right">{month.energy_mwh.toFixed(2)} MWh</td>
+                            <td className="py-2 px-3 text-slate-300 text-right">{month.capacity_factor.toFixed(1)}%</td>
+                            <td className="py-2 px-3 text-slate-300 text-right">{month.availability.toFixed(1)}%</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
               
               {/* Energy Yield Analysis */}
               <div className="bg-surface-dark border border-border-dark rounded-lg p-5">

@@ -115,6 +115,11 @@ export const resultsAPI = {
     return apiClient.get(`/results/${jobId}/power-curve`, { params })
   },
   
+  getOverviewDashboard: (jobId, turbineId = null) => {
+    const params = turbineId ? { turbine_id: turbineId } : {}
+    return apiClient.get(`/results/${jobId}/overview-dashboard`, { params })
+  },
+  
   getFinancial: (jobId) => apiClient.get(`/results/${jobId}/financial`),
   
   getLiveFinancial: (lat = 39.45, lon = -119.78, turbineCount = 10, turbineCapacity = 2.5, electricityPrice = 45.0) => 

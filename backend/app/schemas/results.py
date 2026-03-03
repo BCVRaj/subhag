@@ -18,6 +18,34 @@ class EnergyYieldResults(BaseModel):
     performance_index: Optional[float] = None
 
 
+class OverviewDashboard(BaseModel):
+    """Comprehensive overview dashboard data"""
+    # Summary Statistics (10 cards)
+    total_records: int
+    time_span_days: int
+    mean_wind_speed: float
+    max_wind_speed: float
+    mean_power: float
+    max_power: float
+    capacity_factor: float
+    availability: float
+    estimated_aep_mwh: float
+    total_energy_mwh: float
+    
+    # Energy Loss Breakdown
+    operational_efficiency: float
+    downtime_loss_mwh: float
+    downtime_loss_kwh: float
+    cutout_loss_mwh: float
+    missing_data_percent: float
+    total_loss_mwh: float
+    operational_energy_mwh: float
+    theoretical_energy_mwh: float
+    
+    # Monthly Performance
+    monthly_performance: List[Dict[str, Any]]
+
+
 class PowerCurveResults(BaseModel):
     """Power curve analysis results"""
     observed_curve: List[Dict[str, float]]
