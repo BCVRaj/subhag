@@ -617,90 +617,115 @@ export default function OpsHealthPage() {
               
               {/* Summary Statistics - 10 Card Grid */}
               {overviewDashboardData && (
-                <div className="bg-surface-dark border border-border-dark rounded-lg p-5">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="material-symbols-outlined text-primary text-lg">analytics</span>
-                    <h3 className="text-sm font-bold text-white">Summary Statistics</h3>
+                <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-primary/20 rounded-lg">
+                      <span className="material-symbols-outlined text-primary text-xl">analytics</span>
+                    </div>
+                    <div>
+                      <h3 className="text-base font-bold text-white">Summary Statistics</h3>
+                      <p className="text-xs text-slate-400">Real-time SCADA metrics</p>
+                    </div>
                   </div>
                   
-                  <div className="grid grid-cols-5 gap-4">
+                  <div className="grid grid-cols-5 gap-3">
                     {/* Total Records */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-blue-400 text-2xl mb-2">database</span>
+                    <div className="group bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-blue-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-blue-500/20 rounded-lg mb-2 group-hover:bg-blue-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-blue-400 text-2xl">database</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.total_records.toLocaleString()}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Total Records</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Total Records</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">SCADA data points</span>
                     </div>
                     
                     {/* Time Span */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-purple-400 text-2xl mb-2">schedule</span>
+                    <div className="group bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-purple-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-purple-500/20 rounded-lg mb-2 group-hover:bg-purple-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-purple-400 text-2xl">schedule</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.time_span_days}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Time Span</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Time Span</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">Days of data</span>
                     </div>
                     
                     {/* Mean Wind Speed */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-cyan-400 text-2xl mb-2">air</span>
+                    <div className="group bg-gradient-to-br from-cyan-500/10 to-cyan-600/5 border border-cyan-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-cyan-500/20 rounded-lg mb-2 group-hover:bg-cyan-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-cyan-400 text-2xl">air</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.mean_wind_speed.toFixed(2)}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Mean Wind Speed</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Mean Wind Speed</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">m/s</span>
                     </div>
                     
                     {/* Max Wind Speed */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-cyan-400 text-2xl mb-2">storm</span>
+                    <div className="group bg-gradient-to-br from-cyan-500/10 to-cyan-600/5 border border-cyan-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-cyan-500/20 rounded-lg mb-2 group-hover:bg-cyan-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-cyan-400 text-2xl">storm</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.max_wind_speed.toFixed(2)}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Max Wind Speed</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Max Wind Speed</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">m/s</span>
                     </div>
                     
                     {/* Mean Power */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-green-400 text-2xl mb-2">bolt</span>
+                    <div className="group bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-green-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-green-500/20 rounded-lg mb-2 group-hover:bg-green-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-green-400 text-2xl">bolt</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.mean_power.toFixed(0)}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Mean Power</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Mean Power</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">kW</span>
                     </div>
                     
                     {/* Max Power */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-green-400 text-2xl mb-2">flash_on</span>
+                    <div className="group bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-green-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-green-500/20 rounded-lg mb-2 group-hover:bg-green-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-green-400 text-2xl">flash_on</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.max_power.toFixed(0)}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Max Power</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Max Power</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">kW</span>
                     </div>
                     
                     {/* Capacity Factor */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-primary text-2xl mb-2">speed</span>
+                    <div className="group bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-primary/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-primary/20 rounded-lg mb-2 group-hover:bg-primary/30 transition-colors">
+                        <span className="material-symbols-outlined text-primary text-2xl">speed</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.capacity_factor.toFixed(1)}%</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Capacity Factor</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Capacity Factor</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">Performance</span>
                     </div>
                     
                     {/* Availability */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-primary text-2xl mb-2">check_circle</span>
+                    <div className="group bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-primary/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-primary/20 rounded-lg mb-2 group-hover:bg-primary/30 transition-colors">
+                        <span className="material-symbols-outlined text-primary text-2xl">check_circle</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.availability.toFixed(1)}%</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Availability</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Availability</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">Uptime</span>
                     </div>
                     
                     {/* Estimated AEP */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-accent-amber text-2xl mb-2">trending_up</span>
+                    <div className="group bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-amber-500/20 rounded-lg mb-2 group-hover:bg-amber-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-accent-amber text-2xl">trending_up</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.estimated_aep_mwh.toFixed(0)}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Estimated AEP</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Estimated AEP</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">MWh/year</span>
                     </div>
                     
                     {/* Total Energy */}
-                    <div className="bg-surface-darker border border-border-dark rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-accent-amber text-2xl mb-2">power</span>
+                    <div className="group bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2 bg-amber-500/20 rounded-lg mb-2 group-hover:bg-amber-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-accent-amber text-2xl">power</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.total_energy_mwh.toFixed(0)}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Total Energy</span>
+                      <span className="text-xs font-bold text-slate-300 mt-1">Total Energy</span>
                       <span className="text-[10px] text-slate-500 mt-0.5">MWh</span>
                     </div>
                   </div>
@@ -709,64 +734,82 @@ export default function OpsHealthPage() {
               
               {/* Energy Loss Breakdown */}
               {overviewDashboardData && (
-                <div className="bg-surface-dark border border-border-dark rounded-lg p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-primary text-lg">insights</span>
-                      <h3 className="text-sm font-bold text-white">Energy Loss Breakdown</h3>
+                <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/20 rounded-lg">
+                        <span className="material-symbols-outlined text-primary text-xl">insights</span>
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-white">Energy Loss Breakdown</h3>
+                        <p className="text-xs text-slate-400">Performance analysis & efficiency</p>
+                      </div>
                     </div>
-                    <div className="px-3 py-1 bg-primary/20 border border-primary rounded-full">
-                      <span className="text-xs font-bold text-primary">{overviewDashboardData.operational_efficiency.toFixed(1)}% Operational Efficiency</span>
+                    <div className="px-4 py-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/50 rounded-full shadow-lg shadow-primary/20">
+                      <span className="text-sm font-bold text-primary">{overviewDashboardData.operational_efficiency.toFixed(1)}% Efficiency</span>
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-4 gap-4 mb-4">
+                  <div className="grid grid-cols-4 gap-4 mb-6">
                     {/* Downtime Loss */}
-                    <div className="bg-surface-darker border border-accent-amber/50 rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-accent-amber text-2xl mb-2">schedule</span>
+                    <div className="group bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-accent-amber/40 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-amber-500/30 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2.5 bg-amber-500/20 rounded-lg mb-3 group-hover:bg-amber-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-accent-amber text-2xl">schedule</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.downtime_loss_mwh.toFixed(2)}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Downtime Loss</span>
-                      <span className="text-[10px] text-slate-500 mt-0.5">{overviewDashboardData.downtime_loss_kwh.toFixed(0)} kWh</span>
+                      <span className="text-xs font-bold text-slate-300 mt-2">Downtime Loss</span>
+                      <span className="text-[10px] text-slate-500 mt-1">{overviewDashboardData.downtime_loss_kwh.toFixed(0)} kWh</span>
                     </div>
                     
                     {/* Cut-out Loss */}
-                    <div className="bg-surface-darker border border-cyan-500/50 rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-cyan-400 text-2xl mb-2">wind_power</span>
+                    <div className="group bg-gradient-to-br from-cyan-500/10 to-cyan-600/5 border border-cyan-500/40 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-cyan-500/30 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2.5 bg-cyan-500/20 rounded-lg mb-3 group-hover:bg-cyan-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-cyan-400 text-2xl">wind_power</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.cutout_loss_mwh.toFixed(2)}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Cut-out Loss</span>
-                      <span className="text-[10px] text-slate-500 mt-0.5">High wind ≥25m/s</span>
+                      <span className="text-xs font-bold text-slate-300 mt-2">Cut-out Loss</span>
+                      <span className="text-[10px] text-slate-500 mt-1">High wind ≥25m/s</span>
                     </div>
                     
                     {/* Missing Data */}
-                    <div className="bg-surface-darker border border-purple-500/50 rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-purple-400 text-2xl mb-2">data_alert</span>
+                    <div className="group bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/40 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-purple-500/30 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2.5 bg-purple-500/20 rounded-lg mb-3 group-hover:bg-purple-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-purple-400 text-2xl">data_alert</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.missing_data_percent.toFixed(2)}%</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Missing Data</span>
-                      <span className="text-[10px] text-slate-500 mt-0.5">Records with NaN</span>
+                      <span className="text-xs font-bold text-slate-300 mt-2">Missing Data</span>
+                      <span className="text-[10px] text-slate-500 mt-1">Records with NaN</span>
                     </div>
                     
                     {/* Total Loss */}
-                    <div className="bg-surface-darker border border-accent-red/50 rounded-lg p-4 flex flex-col items-center justify-center">
-                      <span className="material-symbols-outlined text-accent-red text-2xl mb-2">error</span>
+                    <div className="group bg-gradient-to-br from-red-500/10 to-red-600/5 border border-accent-red/40 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-red-500/30 hover:scale-105 transition-all duration-300 cursor-pointer">
+                      <div className="p-2.5 bg-red-500/20 rounded-lg mb-3 group-hover:bg-red-500/30 transition-colors">
+                        <span className="material-symbols-outlined text-accent-red text-2xl">error</span>
+                      </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.total_loss_mwh.toFixed(2)}</span>
-                      <span className="text-xs font-semibold text-slate-400 mt-1">Total Loss</span>
-                      <span className="text-[10px] text-slate-500 mt-0.5">Downtime + Cut-out</span>
+                      <span className="text-xs font-bold text-slate-300 mt-2">Total Loss</span>
+                      <span className="text-[10px] text-slate-500 mt-1">Downtime + Cut-out</span>
                     </div>
                   </div>
                   
                   {/* Progress Bar */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-xs font-semibold">
-                      <span className="text-slate-400">Operational Energy</span>
+                  <div className="bg-surface-darker/50 border border-border-dark/50 rounded-xl p-5 space-y-3">
+                    <div className="flex items-center justify-between text-sm font-bold">
+                      <span className="text-slate-300">Operational Energy</span>
                       <span className="text-white">{overviewDashboardData.operational_energy_mwh.toFixed(2)} MWh</span>
                     </div>
-                    <div className="relative w-full h-4 bg-surface-darker rounded-full overflow-hidden">
+                    <div className="relative w-full h-5 bg-surface-dark rounded-full overflow-hidden shadow-inner">
                       <div 
-                        className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary to-green-500 rounded-full transition-all duration-500"
+                        className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary via-cyan-500 to-green-500 rounded-full transition-all duration-700 shadow-lg shadow-primary/50 animate-pulse"
                         style={{ width: `${(overviewDashboardData.operational_energy_mwh / overviewDashboardData.theoretical_energy_mwh * 100)}%` }}
-                      ></div>
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"></div>
+                      </div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-[10px] font-black text-white/80 drop-shadow-lg">{((overviewDashboardData.operational_energy_mwh / overviewDashboardData.theoretical_energy_mwh * 100)).toFixed(1)}%</span>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between text-xs font-semibold">
+                    <div className="flex items-center justify-between text-sm font-semibold">
                       <span className="text-slate-500">Theoretical Energy</span>
                       <span className="text-slate-400">{overviewDashboardData.theoretical_energy_mwh.toFixed(2)} MWh</span>
                     </div>
@@ -776,14 +819,19 @@ export default function OpsHealthPage() {
               
               {/* Monthly Performance */}
               {overviewDashboardData && overviewDashboardData.monthly_performance && overviewDashboardData.monthly_performance.length > 0 && (
-                <div className="bg-surface-dark border border-border-dark rounded-lg p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-primary text-lg">calendar_month</span>
-                      <h3 className="text-sm font-bold text-white">Monthly Performance</h3>
+                <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-primary/20 rounded-lg">
+                        <span className="material-symbols-outlined text-primary text-xl">calendar_month</span>
+                      </div>
+                      <div>
+                        <h3 className="text-base font-bold text-white">Monthly Performance</h3>
+                        <p className="text-xs text-slate-400">Historical energy & capacity trends</p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button className="px-3 py-1.5 bg-surface-darker border border-border-dark rounded-lg text-xs font-semibold text-slate-400 hover:bg-surface-darker/80 transition-colors">
+                      <button className="px-4 py-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/50 rounded-lg text-xs font-bold text-primary hover:shadow-lg hover:shadow-primary/20 hover:scale-105 transition-all duration-300">
                         <span className="material-symbols-outlined text-[16px] align-middle mr-1">download</span>
                         Export CSV
                       </button>
