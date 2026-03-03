@@ -3,6 +3,7 @@
  */
 import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import Sidebar from '../components/common/Sidebar'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import { resultsAPI, turbinesAPI, maintenanceAPI } from '../services/api'
@@ -24,6 +25,16 @@ export default function OpsHealthPage() {
   const [liveAssetStatus, setLiveAssetStatus] = useState([])
   const [turbineList, setTurbineList] = useState([])  // Real turbine list from backend
   const [serviceHistory, setServiceHistory] = useState([])  // Service history from API
+  
+  // State for performance chart series toggles
+  const [visibleSeries, setVisibleSeries] = useState({
+    windSpeed: true,
+    power: true,
+    temperature: false,
+    direction: false,
+    pitch: false,
+    yawError: false
+  })
   
   const { liveData, loading: liveLoading } = useSCADAData()
   
@@ -1162,41 +1173,203 @@ export default function OpsHealthPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Performance Chart (2/3 width) */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white">Performance (Last 24h)</h3>
-                <div className="flex items-center gap-4 text-xs font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-0.5 bg-primary"></span>
-                    <span className="text-slate-400">Power (MW)</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-3 h-0.5 bg-slate-600"></span>
-                    <span className="text-slate-400">Wind Speed (m/s)</span>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-slate-card border border-white/5 rounded-xl p-6 h-[320px] relative flex flex-col justify-end">
-                {/* Mock Chart Visualization */}
-                <div className="flex items-end justify-between h-48 gap-1 mb-6 px-2">
-                  {performanceHistory.map((point, idx) => (
-                    <div key={idx} className="w-full bg-slate-800/30 rounded-t relative" style={{ height: `${point.height}%` }}>
-                      <div 
-                        className="absolute bottom-0 w-full bg-primary/40 rounded-t border-t border-primary" 
-                        style={{ height: `${point.power}%` }}
-                      />
+              {(() => {
+                // Calculate statistics from telemetryHistory
+                const calculateStats = () => {
+                  if (!telemetryHistory || telemetryHistory.length === 0) {
+                    return {
+                      avgWind: 0, maxWind: 0,
+                      avgPower: 0, maxPower: 0
+                    }
+                  }
+                  
+                  const winds = telemetryHistory.map(p => parseFloat(p.windSpeed) || 0)
+                  const powers = telemetryHistory.map(p => parseFloat(p.power) || 0)
+                  
+                  return {
+                    avgWind: (winds.reduce((a, b) => a + b, 0) / winds.length).toFixed(1),
+                    maxWind: Math.max(...winds).toFixed(1),
+                    avgPower: (powers.reduce((a, b) => a + b, 0) / powers.length).toFixed(0),
+                    maxPower: Math.max(...powers).toFixed(0)
+                  }
+                }
+                
+                const stats = calculateStats()
+                
+                const toggleSeries = (seriesName) => {
+                  setVisibleSeries(prev => ({
+                    ...prev,
+                    [seriesName]: !prev[seriesName]
+                  }))
+                }
+                
+                const seriesConfig = [
+                  { key: 'windSpeed', label: 'Wind Speed', color: '#10b981', icon: 'air' },
+                  { key: 'power', label: 'Power', color: '#10b77f', icon: 'bolt' },
+                  { key: 'temperature', label: 'Temperature', color: '#f97316', icon: 'thermostat' },
+                  { key: 'windDirection', label: 'Direction', color: '#8b5cf6', icon: 'explore' },
+                  { key: 'pitchAngle', label: 'Pitch', color: '#ec4899', icon: 'text_rotation_angleup' },
+                  { key: 'yawError', label: 'Yaw Error', color: '#eab308', icon: 'sync_problem' },
+                ]
+                
+                return (
+                  <>
+                    <div className="flex items-center justify-between flex-wrap gap-3">
+                      <h3 className="text-lg font-bold text-white">Wind Speed & Power Over Time</h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {seriesConfig.map((series) => (
+                          <button
+                            key={series.key}
+                            onClick={() => toggleSeries(series.key)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                              visibleSeries[series.key]
+                                ? 'bg-white/10 border border-white/20 text-white shadow-sm'
+                                : 'bg-transparent border border-white/5 text-slate-500 hover:bg-white/5'
+                            }`}
+                            style={visibleSeries[series.key] ? { borderColor: series.color + '40', backgroundColor: series.color + '15' } : {}}
+                          >
+                            <span className="material-symbols-outlined text-sm" style={{ color: visibleSeries[series.key] ? series.color : '' }}>
+                              {series.icon}
+                            </span>
+                            <span>{series.label}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  ))}
-                </div>
-                <div className="flex justify-between px-2 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
-                  <span>00:00</span>
-                  <span>04:00</span>
-                  <span>08:00</span>
-                  <span>12:00</span>
-                  <span>16:00</span>
-                  <span>20:00</span>
-                  <span>00:00</span>
-                </div>
-              </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {visibleSeries.windSpeed && (
+                        <>
+                          <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                            <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Avg Wind</div>
+                            <div className="text-xl font-black text-white">{stats.avgWind} <span className="text-sm font-medium text-slate-400">m/s</span></div>
+                          </div>
+                          <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                            <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Max Wind</div>
+                            <div className="text-xl font-black text-white">{stats.maxWind} <span className="text-sm font-medium text-slate-400">m/s</span></div>
+                          </div>
+                        </>
+                      )}
+                      {visibleSeries.power && (
+                        <>
+                          <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                            <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Avg Power</div>
+                            <div className="text-xl font-black text-white">{stats.avgPower} <span className="text-sm font-medium text-slate-400">kW</span></div>
+                          </div>
+                          <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+                            <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider mb-1">Max Power</div>
+                            <div className="text-xl font-black text-white">{stats.maxPower} <span className="text-sm font-medium text-slate-400">kW</span></div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    
+                    <div className="bg-slate-card border border-white/5 rounded-xl p-6 h-[400px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={telemetryHistory} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" />
+                          <XAxis 
+                            dataKey="time" 
+                            stroke="#9ca3af" 
+                            style={{ fontSize: '11px' }}
+                            interval="preserveStartEnd"
+                          />
+                          <YAxis 
+                            yAxisId="left"
+                            stroke="#9ca3af" 
+                            style={{ fontSize: '11px' }}
+                          />
+                          <YAxis 
+                            yAxisId="right"
+                            orientation="right"
+                            stroke="#9ca3af" 
+                            style={{ fontSize: '11px' }}
+                          />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#1e293b', 
+                              border: '1px solid #334155', 
+                              borderRadius: '8px',
+                              fontSize: '12px'
+                            }}
+                            labelStyle={{ color: '#e2e8f0', fontWeight: 'bold' }}
+                          />
+                          <Legend 
+                            wrapperStyle={{ fontSize: '12px' }}
+                            iconType="line"
+                          />
+                          {visibleSeries.windSpeed && (
+                            <Line 
+                              yAxisId="left"
+                              type="monotone" 
+                              dataKey="windSpeed" 
+                              stroke="#10b981" 
+                              strokeWidth={2}
+                              dot={false}
+                              name="Wind Speed (m/s)"
+                            />
+                          )}
+                          {visibleSeries.power && (
+                            <Line 
+                              yAxisId="left"
+                              type="monotone" 
+                              dataKey={(data) => (data.power / 100).toFixed(1)} 
+                              stroke="#10b77f" 
+                              strokeWidth={2}
+                              dot={false}
+                              name="Power (kW/100)"
+                            />
+                          )}
+                          {visibleSeries.temperature && (
+                            <Line 
+                              yAxisId="right"
+                              type="monotone" 
+                              dataKey="temperature" 
+                              stroke="#f97316" 
+                              strokeWidth={2}
+                              dot={false}
+                              name="Temperature (°C)"
+                            />
+                          )}
+                          {visibleSeries.windDirection && (
+                            <Line 
+                              yAxisId="right"
+                              type="monotone" 
+                              dataKey="windDirection" 
+                              stroke="#8b5cf6" 
+                              strokeWidth={2}
+                              dot={false}
+                              name="Direction (°)"
+                            />
+                          )}
+                          {visibleSeries.pitchAngle && (
+                            <Line 
+                              yAxisId="right"
+                              type="monotone" 
+                              dataKey="pitchAngle" 
+                              stroke="#ec4899" 
+                              strokeWidth={2}
+                              dot={false}
+                              name="Pitch (°)"
+                            />
+                          )}
+                          {visibleSeries.yawError && (
+                            <Line 
+                              yAxisId="right"
+                              type="monotone" 
+                              dataKey="yawError" 
+                              stroke="#eab308" 
+                              strokeWidth={2}
+                              dot={false}
+                              name="Yaw Error (°)"
+                            />
+                          )}
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </>
+                )
+              })()}
             </div>
             
             {/* Component Health (1/3 width) */}
