@@ -180,6 +180,7 @@ async def get_power_curve_results(job_id: str, turbine_id: str = None):
         warranted = pc_data.get("warranted_curve", [])
         performance_gap = pc_data.get("performance_gap_percent", 0)
         turbulence = pc_data.get("turbulence_intensity", 0.12)
+        wind_distribution = pc_data.get("wind_distribution", [])
         
         # If turbine_id specified, adjust curves based on turbine-specific performance
         if turbine_id and observed:
@@ -234,7 +235,8 @@ async def get_power_curve_results(job_id: str, turbine_id: str = None):
                     performance_gap_percent=turbine_performance_gap,
                     wind_speed_bins=[p["wind_speed"] for p in adjusted_observed[:10]],
                     power_output_bins=[p["power"] for p in adjusted_observed[:10]],
-                    turbulence_intensity=turbulence if turbulence else 12.0
+                    turbulence_intensity=turbulence if turbulence else 12.0,
+                    wind_distribution=wind_distribution
                 )
         
         # Return plant-level data if no turbine_id or turbine not found
@@ -245,7 +247,8 @@ async def get_power_curve_results(job_id: str, turbine_id: str = None):
             performance_gap_percent=performance_gap,
             wind_speed_bins=[p["wind_speed"] for p in observed[:10]] if observed else [],
             power_output_bins=[p["power"] for p in observed[:10]] if observed else [],
-            turbulence_intensity=turbulence if turbulence else 12.0
+            turbulence_intensity=turbulence if turbulence else 12.0,
+            wind_distribution=wind_distribution
         )
     
     except HTTPException:

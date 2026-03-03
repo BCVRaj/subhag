@@ -26,6 +26,7 @@ class PowerCurveResults(BaseModel):
     wind_speed_bins: List[float]
     power_output_bins: List[float]
     turbulence_intensity: Optional[float] = None
+    wind_distribution: Optional[List[Dict[str, float]]] = None
 
 
 class TurbinePerformance(BaseModel):
