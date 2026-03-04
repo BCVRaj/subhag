@@ -910,7 +910,7 @@ export default function OpsHealthPage() {
               )}
               
               {/* Energy Yield Analysis */}
-              <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+              <div className="bg-surface-dark border border-border-dark rounded-xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/20 rounded-lg">
@@ -934,8 +934,7 @@ export default function OpsHealthPage() {
                 <div className="h-64 flex items-end justify-center gap-8 px-4">
                   {/* Potential Energy */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-primary via-primary to-primary/80 rounded-t-xl relative shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300" style={{ height: '190px' }}>
-                      <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 rounded-t-xl"></div>
+                    <div className="w-full bg-primary rounded-t-xl relative transition-all duration-300" style={{ height: '190px' }}>
                       <span className="absolute top-3 left-1/2 -translate-x-1/2 text-xs font-black text-white drop-shadow-lg">{overviewData.potentialEnergy?.toFixed(2)} GWh</span>
                     </div>
                     <span className="text-xs font-bold text-slate-200 text-center">Potential<br/>Energy</span>
@@ -943,8 +942,7 @@ export default function OpsHealthPage() {
                   
                   {/* Wake Losses */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-red-600 to-red-500 rounded-t-xl relative shadow-lg shadow-red-500/30 hover:shadow-2xl hover:shadow-red-500/40 transition-all duration-300" style={{ height: `${(overviewData.wakeLosses / overviewData.potentialEnergy) * 190 || 95}px` }}>
-                      <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 rounded-t-xl"></div>
+                    <div className="w-full bg-red-600 rounded-t-xl relative transition-all duration-300" style={{ height: `${(overviewData.wakeLosses / overviewData.potentialEnergy) * 190 || 95}px` }}>
                       <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-black text-red-400 whitespace-nowrap drop-shadow-lg">-{overviewData.wakeLosses.toFixed(2)}%</span>
                     </div>
                     <span className="text-xs font-bold text-slate-200 text-center">Wake<br/>Losses</span>
@@ -952,8 +950,7 @@ export default function OpsHealthPage() {
                   
                   {/* Downtime */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-red-600 to-red-500 rounded-t-xl relative shadow-lg shadow-red-500/30 hover:shadow-2xl hover:shadow-red-500/40 transition-all duration-300" style={{ height: `${(overviewData.downtime / 100) * 190 || 10}px` }}>
-                      <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 rounded-t-xl"></div>
+                    <div className="w-full bg-red-600 rounded-t-xl relative transition-all duration-300" style={{ height: `${(overviewData.downtime / 100) * 190 || 10}px` }}>
                       <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-black text-red-400 drop-shadow-lg">-{overviewData.downtime.toFixed(1)}%</span>
                     </div>
                     <span className="text-xs font-bold text-slate-200 text-center">Downtime</span>
@@ -961,8 +958,7 @@ export default function OpsHealthPage() {
                   
                   {/* Electrical */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-amber-600 to-amber-500 rounded-t-xl relative shadow-lg shadow-amber-500/30 hover:shadow-2xl hover:shadow-amber-500/40 transition-all duration-300" style={{ height: `${(overviewData.electricalLosses / overviewData.potentialEnergy) * 190 || 48}px` }}>
-                      <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 rounded-t-xl"></div>
+                    <div className="w-full bg-amber-600 rounded-t-xl relative transition-all duration-300" style={{ height: `${(overviewData.electricalLosses / overviewData.potentialEnergy) * 190 || 48}px` }}>
                       <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-black text-amber-400 whitespace-nowrap drop-shadow-lg">-{overviewData.electricalLosses.toFixed(2)}%</span>
                     </div>
                     <span className="text-xs font-bold text-slate-200 text-center">Electrical</span>
@@ -970,8 +966,7 @@ export default function OpsHealthPage() {
                   
                   {/* Actual Energy */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-green-600 via-green-500 to-green-400 rounded-t-xl relative shadow-lg shadow-green-500/40 hover:shadow-2xl hover:shadow-green-500/50 transition-all duration-300" style={{ height: `${((100 - overviewData.wakeLosses - overviewData.downtime - overviewData.electricalLosses) / 100) * 190}px` }}>
-                      <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/20 rounded-t-xl"></div>
+                    <div className="w-full bg-green-600 rounded-t-xl relative transition-all duration-300" style={{ height: `${((100 - overviewData.wakeLosses - overviewData.downtime - overviewData.electricalLosses) / 100) * 190}px` }}>
                       <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-black text-green-400 drop-shadow-lg">{(100 - overviewData.wakeLosses - overviewData.downtime - overviewData.electricalLosses).toFixed(1)}%</span>
                       <span className="absolute top-3 left-1/2 -translate-x-1/2 text-xs font-black text-white drop-shadow-lg">{overviewData.actualEnergy?.toFixed(2)} GWh</span>
                     </div>
@@ -981,7 +976,7 @@ export default function OpsHealthPage() {
               </div>
               
               {/* Live Asset Status */}
-              <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+              <div className="bg-surface-dark border border-border-dark rounded-xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/20 rounded-lg">
@@ -994,15 +989,15 @@ export default function OpsHealthPage() {
                   </div>
                   <div className="flex items-center gap-4 text-xs font-semibold">
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/30 rounded-lg">
-                      <span className="w-2.5 h-2.5 rounded-full bg-primary shadow-lg shadow-primary/50 animate-pulse"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
                       <span className="text-slate-300">Normal ({liveAssetStatus.filter(t => t.status === 'normal').length})</span>
                     </div>
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-                      <span className="w-2.5 h-2.5 rounded-full bg-accent-amber shadow-lg shadow-amber-500/50 animate-pulse"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-accent-amber animate-pulse"></span>
                       <span className="text-slate-300">Warning ({liveAssetStatus.filter(t => t.status === 'warning').length})</span>
                     </div>
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/30 rounded-lg">
-                      <span className="w-2.5 h-2.5 rounded-full bg-accent-red shadow-lg shadow-red-500/50 animate-pulse"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-accent-red animate-pulse"></span>
                       <span className="text-slate-300">Critical ({liveAssetStatus.filter(t => t.status === 'critical').length})</span>
                     </div>
                   </div>
@@ -1017,7 +1012,7 @@ export default function OpsHealthPage() {
                     return (
                       <div 
                         key={turbine.turbine_id}
-                        className="relative w-full aspect-square hover:scale-110 hover:z-10 transition-all duration-300 cursor-pointer group"
+                        className="relative w-full aspect-square hover:scale-105 hover:z-10 transition-all duration-200 cursor-pointer group"
                         title={`${turbine.turbine_id} - ${turbine.status.toUpperCase()}`}
                       >
                         {/* Hexagon SVG */}
@@ -1025,16 +1020,6 @@ export default function OpsHealthPage() {
                           viewBox="0 0 100 100" 
                           className="absolute inset-0 w-full h-full"
                         >
-                          {/* Hexagon glow effect */}
-                          <defs>
-                            <filter id={`glow-${idx}`}>
-                              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                              <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                              </feMerge>
-                            </filter>
-                          </defs>
                           {/* Hexagon background */}
                           <polygon 
                             points="50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5"
@@ -1049,10 +1034,8 @@ export default function OpsHealthPage() {
                             className={turbine.status === 'critical' ? 'stroke-accent-red' : 
                                       turbine.status === 'warning' ? 'stroke-accent-amber' : 
                                       'stroke-primary'}
-                            strokeWidth="3"
+                            strokeWidth="2"
                             fill="none"
-                            filter={`url(#glow-${idx})`}
-                            style={{ filter: 'drop-shadow(0 0 8px currentColor)' }}
                           />
                           {/* Text */}
                           <text 
@@ -1060,7 +1043,7 @@ export default function OpsHealthPage() {
                             y="55" 
                             textAnchor="middle" 
                             className="text-[13px] font-black fill-white"
-                            style={{ fontSize: '13px', fontFamily: 'Inter, sans-serif', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }}
+                            style={{ fontSize: '13px', fontFamily: 'Inter, sans-serif' }}
                           >
                             {turbine.turbine_id}
                           </text>
