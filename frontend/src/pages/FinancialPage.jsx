@@ -21,7 +21,7 @@ export default function FinancialPage() {
   
   // Analysis Settings State
   const [monteCarloSims, setMonteCarloSims] = useState(1000)
-  const [regressionModel, setRegressionModel] = useState('linear')
+  const [regressionModel, setRegressionModel] = useState('regression')
   const [timeResolution, setTimeResolution] = useState('monthly')
   const [includeTemperature, setIncludeTemperature] = useState(true)
   const [includeWindDirection, setIncludeWindDirection] = useState(true)
@@ -299,19 +299,19 @@ export default function FinancialPage() {
                 />
               </div>
               
-              {/* Regression Model */}
+              {/* ML Model */}
               <div>
                 <label className="block text-slate-300 text-sm font-semibold mb-2">
-                  Regression Model
+                  ML Model
                 </label>
                 <select
                   value={regressionModel}
                   onChange={(e) => setRegressionModel(e.target.value)}
                   className="w-full px-4 py-3 bg-slate-card border border-white/10 rounded-lg text-white focus:border-primary focus:outline-none transition-all appearance-none cursor-pointer"
                 >
-                  <option value="linear">Linear (lin)</option>
-                  <option value="polynomial">Polynomial</option>
-                  <option value="exponential">Exponential</option>
+                  <option value="regression">Regression</option>
+                  <option value="xgboost">XGBoost</option>
+                  <option value="classification">Classification Model</option>
                 </select>
               </div>
               

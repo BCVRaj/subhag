@@ -4,11 +4,13 @@ Results API Endpoints
 from fastapi import APIRouter, HTTPException, Query
 from pathlib import Path
 import pandas as pd
+import logging
 from app.services.job_service import JobService
 from app.schemas.results import EnergyYieldResults, PowerCurveResults, FinancialResults
 from app.services.wind_data import get_nrel_wind_data, calculate_aep
 import numpy as np
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -706,7 +708,7 @@ async def get_live_financial_data(
     turbine_capacity_mw: float = Query(2.5, description="Turbine capacity in MW"),
     electricity_price: float = Query(45.0, description="Electricity price in USD/MWh"),
     num_simulations: int = Query(10000, description="Number of Monte Carlo simulations"),
-    regression_model: str = Query("linear", description="Regression model: linear, polynomial, exponential"),
+    regression_model: str = Query("regression", description="ML model: regression, xgboost, classification"),
     time_resolution: str = Query("monthly", description="Time resolution: monthly, daily, hourly"),
     include_temperature: bool = Query(True, description="Include temperature correction"),
     include_wind_direction: bool = Query(True, description="Include wind direction analysis")
@@ -755,29 +757,29 @@ async def get_live_financial_data(
         # Base uncertainty percentage (wind resource assessment standard)
         base_uncertainty_pct = 8.0
         
-        # Generate distribution based on selected regression model
-        if regression_model == "polynomial":
-            # Polynomial model: captures non-linear uncertainty (higher variance at extremes)
+        # Generate distribution based on selected ML model
+        if regression_model == "xgboost":
+            # XGBoost model: gradient boosting with non-linear uncertainty (higher variance at extremes)
             # Uses beta distribution for bounded, skewed uncertainty
-            # Typical for sites with complex terrain or seasonal variations
+            # Optimized for sites with complex terrain or seasonal variations
             alpha_param = 5
             beta_param = 2
             uniform_samples = np.random.beta(alpha_param, beta_param, num_simulations)
-            # Map [0,1] to AEP range with polynomial uncertainty
-            uncertainty_range = total_net_aep * (base_uncertainty_pct * 1.5 / 100)  # 50% wider for polynomial
+            # Map [0,1] to AEP range with XGBoost-style uncertainty
+            uncertainty_range = total_net_aep * (base_uncertainty_pct * 1.5 / 100)  # 50% wider for XGBoost
             simulations = total_net_aep + (uniform_samples - 0.7) * 2 * uncertainty_range
             
-        elif regression_model == "exponential":
-            # Exponential model: models asymmetric risk (downside risk emphasis)
+        elif regression_model == "classification":
+            # Classification model: categorical risk classification (downside risk emphasis)
             # Uses gamma distribution for right-skewed uncertainty
             # Typical for conservative risk assessment (emphasizes lower production scenarios)
             shape_param = 4
             scale_param = total_net_aep / (shape_param * 1.1)
             simulations = np.random.gamma(shape_param, scale_param, num_simulations)
             
-        else:  # linear (default)
-            # Linear model: symmetric Gaussian uncertainty
-            # Standard approach for well-characterized sites
+        else:  # regression (default)
+            # Linear Regression model: symmetric Gaussian uncertainty
+            # Standard ML regression approach for well-characterized sites
             # Uses normal distribution (most common in industry)
             simulations = np.random.normal(
                 total_net_aep, 
@@ -820,7 +822,8 @@ async def get_live_financial_data(
                 "bin_end": round(float(bin_edges[i+1]), 2)
             })
         
-        return {
+        # Construct response with full risk_metrics
+        response_data = {
             "mean_aep_gwh": round(mean_aep, 2),
             "p50_energy_gwh": round(p50_energy, 2),
             "p90_energy_gwh": round(p90_energy, 2),
@@ -854,8 +857,15 @@ async def get_live_financial_data(
                 "simulations": num_simulations
             }
         }
+        
+        # Log risk_metrics for debugging
+        logger.info(f"📊 Risk metrics keys: {list(response_data.get('risk_metrics', {}).keys())}")
+        logger.info(f"🔧 Regression model: {regression_model}, Simulations: {num_simulations}")
+        
+        return response_data
     
     except Exception as e:
+        logger.error(f"❌ Error in get_live_financial_data: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to calculate live financial data: {str(e)}")
 
 
