@@ -617,9 +617,9 @@ export default function OpsHealthPage() {
               
               {/* Summary Statistics - 10 Card Grid */}
               {overviewDashboardData && (
-                <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+                <div className="bg-surface-dark border border-border-dark rounded-xl p-6">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-primary/20 rounded-lg">
+                    <div className="p-2 bg-primary/15 rounded-lg">
                       <span className="material-symbols-outlined text-primary text-xl">analytics</span>
                     </div>
                     <div>
@@ -630,8 +630,8 @@ export default function OpsHealthPage() {
                   
                   <div className="grid grid-cols-5 gap-3">
                     {/* Total Records */}
-                    <div className="group bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-blue-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-blue-500/20 rounded-lg mb-2 group-hover:bg-blue-500/30 transition-colors">
+                    <div className="bg-blue-500/5 border border-blue-500/20 rounded-xl p-4 flex flex-col items-center justify-center hover:border-blue-500/40 transition-colors cursor-pointer">
+                      <div className="p-2 bg-blue-500/15 rounded-lg mb-2">
                         <span className="material-symbols-outlined text-blue-400 text-2xl">database</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.total_records.toLocaleString()}</span>
@@ -640,8 +640,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Time Span */}
-                    <div className="group bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-purple-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-purple-500/20 rounded-lg mb-2 group-hover:bg-purple-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-purple-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2 bg-purple-500/20 rounded-lg mb-2 transition-colors">
                         <span className="material-symbols-outlined text-purple-400 text-2xl">schedule</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.time_span_days}</span>
@@ -650,8 +650,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Mean Wind Speed */}
-                    <div className="group bg-gradient-to-br from-cyan-500/10 to-cyan-600/5 border border-cyan-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-cyan-500/20 rounded-lg mb-2 group-hover:bg-cyan-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-cyan-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2 bg-cyan-500/20 rounded-lg mb-2 transition-colors">
                         <span className="material-symbols-outlined text-cyan-400 text-2xl">air</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.mean_wind_speed.toFixed(2)}</span>
@@ -660,8 +660,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Max Wind Speed */}
-                    <div className="group bg-gradient-to-br from-cyan-500/10 to-cyan-600/5 border border-cyan-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-cyan-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-cyan-500/20 rounded-lg mb-2 group-hover:bg-cyan-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-cyan-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2 bg-cyan-500/20 rounded-lg mb-2 transition-colors">
                         <span className="material-symbols-outlined text-cyan-400 text-2xl">storm</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.max_wind_speed.toFixed(2)}</span>
@@ -670,8 +670,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Mean Power */}
-                    <div className="group bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-green-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-green-500/20 rounded-lg mb-2 group-hover:bg-green-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-green-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2 bg-green-500/20 rounded-lg mb-2 transition-colors">
                         <span className="material-symbols-outlined text-green-400 text-2xl">bolt</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.mean_power.toFixed(0)}</span>
@@ -680,8 +680,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Max Power */}
-                    <div className="group bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-green-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-green-500/20 rounded-lg mb-2 group-hover:bg-green-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-green-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2 bg-green-500/20 rounded-lg mb-2 transition-colors">
                         <span className="material-symbols-outlined text-green-400 text-2xl">flash_on</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.max_power.toFixed(0)}</span>
@@ -690,8 +690,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Capacity Factor */}
-                    <div className="group bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-primary/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-primary/20 rounded-lg mb-2 group-hover:bg-primary/30 transition-colors">
+                    <div className="group bg-surface-dark border border-primary/30 rounded-xl p-4 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2 bg-primary/20 rounded-lg mb-2 transition-colors">
                         <span className="material-symbols-outlined text-primary text-2xl">speed</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.capacity_factor.toFixed(1)}%</span>
@@ -700,8 +700,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Availability */}
-                    <div className="group bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-primary/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-primary/20 rounded-lg mb-2 group-hover:bg-primary/30 transition-colors">
+                    <div className="group bg-surface-dark border border-primary/30 rounded-xl p-4 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2 bg-primary/20 rounded-lg mb-2 transition-colors">
                         <span className="material-symbols-outlined text-primary text-2xl">check_circle</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.availability.toFixed(1)}%</span>
@@ -710,8 +710,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Estimated AEP */}
-                    <div className="group bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-amber-500/20 rounded-lg mb-2 group-hover:bg-amber-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-amber-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2 bg-amber-500/20 rounded-lg mb-2 transition-colors">
                         <span className="material-symbols-outlined text-accent-amber text-2xl">trending_up</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.estimated_aep_mwh.toFixed(0)}</span>
@@ -720,8 +720,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Total Energy */}
-                    <div className="group bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2 bg-amber-500/20 rounded-lg mb-2 group-hover:bg-amber-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-amber-500/30 rounded-xl p-4 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2 bg-amber-500/20 rounded-lg mb-2 transition-colors">
                         <span className="material-symbols-outlined text-accent-amber text-2xl">power</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.total_energy_mwh.toFixed(0)}</span>
@@ -734,7 +734,7 @@ export default function OpsHealthPage() {
               
               {/* Energy Loss Breakdown */}
               {overviewDashboardData && (
-                <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+                <div className="bg-surface-dark border border-border-dark rounded-xl p-6 ">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-primary/20 rounded-lg">
@@ -745,15 +745,15 @@ export default function OpsHealthPage() {
                         <p className="text-xs text-slate-400">Performance analysis & efficiency</p>
                       </div>
                     </div>
-                    <div className="px-4 py-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/50 rounded-full shadow-lg shadow-primary/20">
+                    <div className="px-4 py-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/50 rounded-full">
                       <span className="text-sm font-bold text-primary">{overviewDashboardData.operational_efficiency.toFixed(1)}% Efficiency</span>
                     </div>
                   </div>
                   
                   <div className="grid grid-cols-4 gap-4 mb-6">
                     {/* Downtime Loss */}
-                    <div className="group bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-accent-amber/40 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-amber-500/30 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2.5 bg-amber-500/20 rounded-lg mb-3 group-hover:bg-amber-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-accent-amber/40 rounded-xl p-5 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2.5 bg-amber-500/20 rounded-lg mb-3 transition-colors">
                         <span className="material-symbols-outlined text-accent-amber text-2xl">schedule</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.downtime_loss_mwh.toFixed(2)}</span>
@@ -762,8 +762,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Cut-out Loss */}
-                    <div className="group bg-gradient-to-br from-cyan-500/10 to-cyan-600/5 border border-cyan-500/40 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-cyan-500/30 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2.5 bg-cyan-500/20 rounded-lg mb-3 group-hover:bg-cyan-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-cyan-500/40 rounded-xl p-5 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2.5 bg-cyan-500/20 rounded-lg mb-3 transition-colors">
                         <span className="material-symbols-outlined text-cyan-400 text-2xl">wind_power</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.cutout_loss_mwh.toFixed(2)}</span>
@@ -772,8 +772,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Missing Data */}
-                    <div className="group bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-500/40 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-purple-500/30 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2.5 bg-purple-500/20 rounded-lg mb-3 group-hover:bg-purple-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-purple-500/40 rounded-xl p-5 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2.5 bg-purple-500/20 rounded-lg mb-3 transition-colors">
                         <span className="material-symbols-outlined text-purple-400 text-2xl">data_alert</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.missing_data_percent.toFixed(2)}%</span>
@@ -782,8 +782,8 @@ export default function OpsHealthPage() {
                     </div>
                     
                     {/* Total Loss */}
-                    <div className="group bg-gradient-to-br from-red-500/10 to-red-600/5 border border-accent-red/40 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-lg hover:shadow-red-500/30 hover:scale-105 transition-all duration-300 cursor-pointer">
-                      <div className="p-2.5 bg-red-500/20 rounded-lg mb-3 group-hover:bg-red-500/30 transition-colors">
+                    <div className="group bg-surface-dark border border-accent-red/40 rounded-xl p-5 flex flex-col items-center justify-center hover:border-opacity-100 transition-colors cursor-pointer">
+                      <div className="p-2.5 bg-red-500/20 rounded-lg mb-3 transition-colors">
                         <span className="material-symbols-outlined text-accent-red text-2xl">error</span>
                       </div>
                       <span className="text-2xl font-black text-white">{overviewDashboardData.total_loss_mwh.toFixed(2)}</span>
@@ -798,15 +798,13 @@ export default function OpsHealthPage() {
                       <span className="text-slate-300">Operational Energy</span>
                       <span className="text-white">{overviewDashboardData.operational_energy_mwh.toFixed(2)} MWh</span>
                     </div>
-                    <div className="relative w-full h-5 bg-surface-dark rounded-full overflow-hidden shadow-inner">
+                    <div className="relative w-full h-5 bg-surface-dark rounded-full overflow-hidden">
                       <div 
-                        className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary via-cyan-500 to-green-500 rounded-full transition-all duration-700 shadow-lg shadow-primary/50 animate-pulse"
+                        className="absolute left-0 top-0 h-full bg-primary rounded-full transition-all duration-700"
                         style={{ width: `${(overviewDashboardData.operational_energy_mwh / overviewDashboardData.theoretical_energy_mwh * 100)}%` }}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent"></div>
-                      </div>
+                      ></div>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[10px] font-black text-white/80 drop-shadow-lg">{((overviewDashboardData.operational_energy_mwh / overviewDashboardData.theoretical_energy_mwh * 100)).toFixed(1)}%</span>
+                        <span className="text-[10px] font-black text-white/90">{((overviewDashboardData.operational_energy_mwh / overviewDashboardData.theoretical_energy_mwh * 100)).toFixed(1)}%</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between text-sm font-semibold">
@@ -819,7 +817,7 @@ export default function OpsHealthPage() {
               
               {/* Monthly Performance */}
               {overviewDashboardData && overviewDashboardData.monthly_performance && overviewDashboardData.monthly_performance.length > 0 && (
-                <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+                <div className="bg-surface-dark border border-border-dark rounded-xl p-6 ">
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-primary/20 rounded-lg">
@@ -831,7 +829,7 @@ export default function OpsHealthPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button className="px-4 py-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/50 rounded-lg text-xs font-bold text-primary hover:shadow-lg hover:shadow-primary/20 hover:scale-105 transition-all duration-300">
+                      <button className="px-4 py-2 bg-gradient-to-r from-primary/20 to-primary/10 border border-primary/50 rounded-lg text-xs font-bold text-primary hover:border-opacity-100 transition-colors">
                         <span className="material-symbols-outlined text-[16px] align-middle mr-1">download</span>
                         Export CSV
                       </button>
@@ -910,7 +908,7 @@ export default function OpsHealthPage() {
               )}
               
               {/* Energy Yield Analysis */}
-              <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+              <div className="bg-surface-dark border border-border-dark rounded-xl p-6 ">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/20 rounded-lg">
@@ -921,7 +919,7 @@ export default function OpsHealthPage() {
                       <p className="text-xs text-slate-400">Waterfall chart showing energy flow</p>
                     </div>
                     {turbineId && (
-                      <span className="text-[10px] bg-gradient-to-r from-primary/30 to-primary/20 border border-primary/50 text-primary px-3 py-1.5 rounded-full font-bold shadow-lg shadow-primary/20">
+                      <span className="text-[10px] bg-gradient-to-r from-primary/30 to-primary/20 border border-primary/50 text-primary px-3 py-1.5 rounded-full font-bold">
                         {turbineId}
                       </span>
                     )}
@@ -934,7 +932,7 @@ export default function OpsHealthPage() {
                 <div className="h-64 flex items-end justify-center gap-8 px-4">
                   {/* Potential Energy */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-primary via-primary to-primary/80 rounded-t-xl relative shadow-lg shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300" style={{ height: '190px' }}>
+                    <div className="w-full bg-gradient-to-t from-primary via-primary to-primary/80 rounded-t-xl relative hover: hover:shadow-primary/40 transition-all duration-300" style={{ height: '190px' }}>
                       <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 rounded-t-xl"></div>
                       <span className="absolute top-3 left-1/2 -translate-x-1/2 text-xs font-black text-white drop-shadow-lg">{overviewData.potentialEnergy?.toFixed(2)} GWh</span>
                     </div>
@@ -943,7 +941,7 @@ export default function OpsHealthPage() {
                   
                   {/* Wake Losses */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-red-600 to-red-500 rounded-t-xl relative shadow-lg shadow-red-500/30 hover:shadow-2xl hover:shadow-red-500/40 transition-all duration-300" style={{ height: `${(overviewData.wakeLosses / overviewData.potentialEnergy) * 190 || 95}px` }}>
+                    <div className="w-full bg-gradient-to-t from-red-600 to-red-500 rounded-t-xl relative hover: hover:shadow-red-500/40 transition-all duration-300" style={{ height: `${(overviewData.wakeLosses / overviewData.potentialEnergy) * 190 || 95}px` }}>
                       <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 rounded-t-xl"></div>
                       <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-black text-red-400 whitespace-nowrap drop-shadow-lg">-{overviewData.wakeLosses.toFixed(2)}%</span>
                     </div>
@@ -952,7 +950,7 @@ export default function OpsHealthPage() {
                   
                   {/* Downtime */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-red-600 to-red-500 rounded-t-xl relative shadow-lg shadow-red-500/30 hover:shadow-2xl hover:shadow-red-500/40 transition-all duration-300" style={{ height: `${(overviewData.downtime / 100) * 190 || 10}px` }}>
+                    <div className="w-full bg-gradient-to-t from-red-600 to-red-500 rounded-t-xl relative hover: hover:shadow-red-500/40 transition-all duration-300" style={{ height: `${(overviewData.downtime / 100) * 190 || 10}px` }}>
                       <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 rounded-t-xl"></div>
                       <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-black text-red-400 drop-shadow-lg">-{overviewData.downtime.toFixed(1)}%</span>
                     </div>
@@ -961,7 +959,7 @@ export default function OpsHealthPage() {
                   
                   {/* Electrical */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-amber-600 to-amber-500 rounded-t-xl relative shadow-lg shadow-amber-500/30 hover:shadow-2xl hover:shadow-amber-500/40 transition-all duration-300" style={{ height: `${(overviewData.electricalLosses / overviewData.potentialEnergy) * 190 || 48}px` }}>
+                    <div className="w-full bg-gradient-to-t from-amber-600 to-amber-500 rounded-t-xl relative hover: hover:shadow-amber-500/40 transition-all duration-300" style={{ height: `${(overviewData.electricalLosses / overviewData.potentialEnergy) * 190 || 48}px` }}>
                       <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/10 rounded-t-xl"></div>
                       <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-black text-amber-400 whitespace-nowrap drop-shadow-lg">-{overviewData.electricalLosses.toFixed(2)}%</span>
                     </div>
@@ -970,7 +968,7 @@ export default function OpsHealthPage() {
                   
                   {/* Actual Energy */}
                   <div className="group flex flex-col items-center gap-2 flex-1 max-w-[110px]">
-                    <div className="w-full bg-gradient-to-t from-green-600 via-green-500 to-green-400 rounded-t-xl relative shadow-lg shadow-green-500/40 hover:shadow-2xl hover:shadow-green-500/50 transition-all duration-300" style={{ height: `${((100 - overviewData.wakeLosses - overviewData.downtime - overviewData.electricalLosses) / 100) * 190}px` }}>
+                    <div className="w-full bg-gradient-to-t from-green-600 via-green-500 to-green-400 rounded-t-xl relative hover: hover:shadow-green-500/50 transition-all duration-300" style={{ height: `${((100 - overviewData.wakeLosses - overviewData.downtime - overviewData.electricalLosses) / 100) * 190}px` }}>
                       <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/20 rounded-t-xl"></div>
                       <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-sm font-black text-green-400 drop-shadow-lg">{(100 - overviewData.wakeLosses - overviewData.downtime - overviewData.electricalLosses).toFixed(1)}%</span>
                       <span className="absolute top-3 left-1/2 -translate-x-1/2 text-xs font-black text-white drop-shadow-lg">{overviewData.actualEnergy?.toFixed(2)} GWh</span>
@@ -981,7 +979,7 @@ export default function OpsHealthPage() {
               </div>
               
               {/* Live Asset Status */}
-              <div className="bg-gradient-to-br from-surface-dark to-surface-darker border border-border-dark rounded-xl p-6 shadow-2xl">
+              <div className="bg-surface-dark border border-border-dark rounded-xl p-6 ">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/20 rounded-lg">
@@ -994,15 +992,15 @@ export default function OpsHealthPage() {
                   </div>
                   <div className="flex items-center gap-4 text-xs font-semibold">
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/30 rounded-lg">
-                      <span className="w-2.5 h-2.5 rounded-full bg-primary shadow-lg shadow-primary/50 animate-pulse"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-primary"></span>
                       <span className="text-slate-300">Normal ({liveAssetStatus.filter(t => t.status === 'normal').length})</span>
                     </div>
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-                      <span className="w-2.5 h-2.5 rounded-full bg-accent-amber shadow-lg shadow-amber-500/50 animate-pulse"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-accent-amber"></span>
                       <span className="text-slate-300">Warning ({liveAssetStatus.filter(t => t.status === 'warning').length})</span>
                     </div>
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/30 rounded-lg">
-                      <span className="w-2.5 h-2.5 rounded-full bg-accent-red shadow-lg shadow-red-500/50 animate-pulse"></span>
+                      <span className="w-2.5 h-2.5 rounded-full bg-accent-red"></span>
                       <span className="text-slate-300">Critical ({liveAssetStatus.filter(t => t.status === 'critical').length})</span>
                     </div>
                   </div>
@@ -1017,7 +1015,7 @@ export default function OpsHealthPage() {
                     return (
                       <div 
                         key={turbine.turbine_id}
-                        className="relative w-full aspect-square hover:scale-110 hover:z-10 transition-all duration-300 cursor-pointer group"
+                        className="relative w-full aspect-square hover:opacity-90 transition-opacity cursor-pointer"
                         title={`${turbine.turbine_id} - ${turbine.status.toUpperCase()}`}
                       >
                         {/* Hexagon SVG */}
@@ -1025,23 +1023,12 @@ export default function OpsHealthPage() {
                           viewBox="0 0 100 100" 
                           className="absolute inset-0 w-full h-full"
                         >
-                          {/* Hexagon glow effect */}
-                          <defs>
-                            <filter id={`glow-${idx}`}>
-                              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                              <feMerge>
-                                <feMergeNode in="coloredBlur"/>
-                                <feMergeNode in="SourceGraphic"/>
-                              </feMerge>
-                            </filter>
-                          </defs>
                           {/* Hexagon background */}
                           <polygon 
                             points="50,5 90,27.5 90,72.5 50,95 10,72.5 10,27.5"
-                            className={turbine.status === 'critical' ? 'fill-red-500/20 group-hover:fill-red-500/30' : 
-                                      turbine.status === 'warning' ? 'fill-amber-500/20 group-hover:fill-amber-500/30' : 
-                                      'fill-primary/20 group-hover:fill-primary/30'}
-                            style={{ transition: 'fill 0.3s' }}
+                            className={turbine.status === 'critical' ? 'fill-red-500/15' : 
+                                      turbine.status === 'warning' ? 'fill-amber-500/15' : 
+                                      'fill-primary/15'}
                           />
                           {/* Hexagon border */}
                           <polygon 
@@ -1049,10 +1036,8 @@ export default function OpsHealthPage() {
                             className={turbine.status === 'critical' ? 'stroke-accent-red' : 
                                       turbine.status === 'warning' ? 'stroke-accent-amber' : 
                                       'stroke-primary'}
-                            strokeWidth="3"
+                            strokeWidth="2"
                             fill="none"
-                            filter={`url(#glow-${idx})`}
-                            style={{ filter: 'drop-shadow(0 0 8px currentColor)' }}
                           />
                           {/* Text */}
                           <text 
@@ -1060,7 +1045,7 @@ export default function OpsHealthPage() {
                             y="55" 
                             textAnchor="middle" 
                             className="text-[13px] font-black fill-white"
-                            style={{ fontSize: '13px', fontFamily: 'Inter, sans-serif', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))' }}
+                            style={{ fontSize: '13px', fontFamily: 'Inter, sans-serif' }}
                           >
                             {turbine.turbine_id}
                           </text>
